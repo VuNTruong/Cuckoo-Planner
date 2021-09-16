@@ -2,11 +2,11 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="Planner/wwwroot/js/site.js">
     <Files>
       <File FileName="Planner/Models/WorkItem.cs" Line="14" Column="29" />
-      <File FileName="Planner/Data/DatabaseContext.cs" Line="18" Column="35" />
-      <File FileName="Planner/Controllers/WorkItemController.cs" Line="19" Column="6" />
-      <File FileName="Planner/Views/Shared/_Layout.cshtml" Line="5" Column="77" />
-      <File FileName="Planner/wwwroot/js/site.js" Line="13" Column="43" />
-      <File FileName="Planner/Views/WorkItem/Index.cshtml" Line="14" Column="1" />
+      <File FileName="Planner/Data/DatabaseContext.cs" />
+      <File FileName="Planner/Controllers/WorkItemController.cs" />
+      <File FileName="Planner/Views/Shared/_Layout.cshtml" />
+      <File FileName="Planner/wwwroot/js/site.js" Line="27" Column="6" />
+      <File FileName="Planner/Views/WorkItem/Index.cshtml" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">

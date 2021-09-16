@@ -4,7 +4,6 @@
 // Write your JavaScript code.
 
 (function () {
-    console.log("Called");
     $.ajax({
         url: 'https://localhost:5001/api/v1/WorkItem',
         type: 'GET',

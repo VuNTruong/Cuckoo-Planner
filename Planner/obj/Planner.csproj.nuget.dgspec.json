@@ -14,7 +14,7 @@
         "outputPath": "/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/vntruong/.nuget/NuGet/NuGet.Config"
+          "/Users/vntruong/.config/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"

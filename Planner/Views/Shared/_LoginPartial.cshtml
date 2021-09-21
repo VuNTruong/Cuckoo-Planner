@@ -1,0 +1,39 @@
+@using Microsoft.AspNetCore.Identity
+@using Planner.Models;
+@using Planner.Data;
+@using System.Linq;
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    // Get user id of the currently logged in user
+    string currentUserId = UserManager.GetUserId(User);
+
+    // Create the database context object
+    var databaseContext = new DatabaseContext();
+
+    // Reference the database to get user object of the currently logged in user
+    var userObject = (databaseContext.Users.Where((userObject) =>
+        userObject.Id == currentUserId
+    ).ToList())[0];
+
+    <li class="nav-item">
+        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @userObject.fullName</a>
+    </li>
+    <li class="nav-item">
+        <button id="logout" type="submit" class="nav-link btn btn-link text-dark" onclick="signOut(event)">Logout</button>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="register" href="/auth/signup">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="login" href="/auth/login">Login</a>
+    </li>
+}
+</ul>

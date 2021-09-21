@@ -1,9 +1,6 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-
-(function () {
+﻿// The function get all work items from the database
+function loadAllTasks () {
+    // Use Ajax to start getting tasks from the database
     $.ajax({
         url: 'https://localhost:5001/api/v1/WorkItem',
         type: 'GET',
@@ -12,20 +9,66 @@
         success: function (responseData) {
             for (i = 0; i < responseData.data.length; i++) {
                 $('.list-of-work-item').append(`
-                <div class="work-item">
-                    <p class="title">${responseData.data[i].title}</p>
-                    <p class="detail">${responseData.data[i].content}</p>
-                    <div class="options">
-                        <button class="button">Remove</a>
-                        <button class="button">Mark as done</button>
+                    <div class="work-item" id="${responseData.data[i].id}">
+                        <p class="title" id="title-${responseData.data[i].id}">${responseData.data[i].title}</p>
+                        <p class="detail" id="detail-${responseData.data[i].id}">${responseData.data[i].content}</p>
+                        <div class="options">
+                            <button class="button" id="${responseData.data[i].id}" onclick="onDelete(event.target.id)">Remove</a>
+                            <button class="button" id="${responseData.data[i].id}" onclick="openUpdateTaskMenu(event.target.id)">Update</button>
+                        </div>
                     </div>
-                </div>
-            `)
+                `)
             }
         }
     });
-})();
+}
 
+// The function to open the update task menu
+function openUpdateTaskMenu(item_id_to_update) {
+    // Append update task menu into the Post view
+    $('.update-task-area').append(`
+        <div class="update-backdrop" id="update-backdrop" onclick="closeUpdateTaskMenu()"></div>
+        <div class="update-menu" id="update-menu">
+            <form class="update-form" onsubmit="onUpdate(${item_id_to_update})">
+                <h2>
+                    Update task
+                </h2>
+                <label for="title">Title:</label><br>
+                <input type="text" id="title_update_field" name="title" class="field"><br>
+
+                <label for="content">Content:</label><br>
+                <input type="text" id="content_update_field" name="content" class="field"><br><br>
+
+                <input type="submit" value="Submit" class="button">
+            </form>
+        </div>
+    `);
+}
+
+// The function to close the update task menu
+function closeUpdateTaskMenu() {
+    // Remove the update backdrop and update menu from the view
+    $("div").remove('#update-backdrop');
+    $("div").remove('#update-menu');
+}
+
+// The function to delete a work item from the database
+function onDelete(work_item_id) {
+    // Use Ajax to start deleting task from the database
+    $.ajax({
+        url: `https://localhost:5001/api/v1/WorkItem?workItemId=${work_item_id}`,
+        type: 'DELETE',
+        dataType: "json",
+        cache: false,
+        success: function (responseData) {
+            // At this point, task is deleted in the database, we will now need to remove it from
+            // current list of tasks (work item)
+            $("div").remove(`#${work_item_id}`);
+        }
+    })
+}
+
+// The function to add new work item
 function onAdd() {
     // Get value of the new title
     const newTitle = document.getElementById("title_text_field").value;
@@ -42,7 +85,7 @@ function onAdd() {
     today = mm + '/' + dd + '/' + yyyy;
     const dateString = today.toString();
 
-    // Use Ajax to create new post in the
+    // Use Ajax to create new work item in the database
     $.ajax({
         url: 'https://localhost:5001/api/v1/WorkItem',
         type: 'POST',
@@ -60,11 +103,117 @@ function onAdd() {
                     <p class="title">${responseData.data.title}</p>
                     <p class="detail">${responseData.data.content}</p>
                     <div class="options">
-                        <button class="button">Remove</a>
-                        <button class="button">Mark as done</button>
+                        <button class="button" id="${responseData.data.id}" onclick="onDelete(event.target.id)">Remove</a>
+                            <button class="button" id="${responseData.data.id}" onclick="openUpdateTaskMenu(event.target.id)">Update</button>
                     </div>
                 </div>
             `)
+        }
+    })
+}
+
+// The function to update current record in the database
+function onUpdate(work_item_id) {
+    // Get value of the new title
+    const newTitle = document.getElementById("title_update_field").value;
+
+    // Get value of the new content
+    const newContent = document.getElementById("content_update_field").value;
+
+    // Use Ajax to start updating task in the database
+    $.ajax({
+        url: `https://localhost:5001/api/v1/WorkItem?workItemId=${work_item_id}`,
+        type: 'PATCH',
+        dataType: "json",
+        cache: false,
+        data: JSON.stringify({
+            "title": newTitle,
+            "content": newContent
+        }),
+        success: function (responseData) {
+            // Update title of the work item
+            $(`title-${work_item_id}`).text(responseData.data.title)
+
+            // Update content of the work item
+            $(`content-${work_item_id}`).text(responseData.data.content)
+        }
+    })
+}
+
+// The function to sign the user in
+function signIn(event) {
+    // Prevent any default
+    event.preventDefault();
+
+    // Get entered email
+    const email = document.getElementById("email_login_field").value;
+
+    // Get entered password
+    const password = document.getElementById("password_login_field").value;
+
+    // Use Ajax to perform login procedure
+    $.ajax({
+        url: "https://localhost:5001/api/v1/Auth/signIn",
+        type: "POST",
+        cache: false,
+        data: JSON.stringify({
+            "email": email,
+            "password": password
+        }),
+        success: function (responseData) {
+            // Go to the main page
+            window.location.href = "/dashboard/main"
+        }
+    })
+}
+
+// The function to sign the user up
+function signUp(event) {
+    // Prevent any default
+    event.preventDefault();
+
+    // Get entered full name
+    const fullName = document.getElementById("fullname_signup_field").value;
+
+    // Get entered email
+    const email = document.getElementById("email_signup_field").value;
+
+    // Get entered password
+    const password = document.getElementById("password_signup_field").value;
+
+    // Get entered password confirm
+    const passwordConfirm = document.getElementById("password_confirm_signup_field").value;
+
+    // Use Ajax to perform sign up procedure
+    $.ajax({
+        url: "https://localhost:5001/api/v1/Auth/signUp",
+        type: "POST",
+        cache: false,
+        data: JSON.stringify({
+            "email": email,
+            "password": password,
+            "passwordConfirm": passwordConfirm,
+            "fullName": fullName
+        }),
+        success: function (responseData) {
+            console.log("You are signed up :)))");
+        }
+    })
+}
+
+// The function to sign the user out
+function signOut(event) {
+    // Prevent any default
+    event.preventDefault();
+
+    // Use Ajax to perform sign out procedure
+    $.ajax({
+        url: "https://localhost:5001/api/v1/Auth/signOut",
+        type: "POST",
+        cache: false,
+        success: function (responseData) {
+            // Go to the welcome page
+            window.location.href = "/"
         }
     })
 }

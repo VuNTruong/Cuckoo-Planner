@@ -16,12 +16,20 @@ namespace Planner.Models
 
         // Date created of work item
         public string dateCreated { get; set; }
+        
+        // Done status
+        public bool doneStatus { get; set; }
+
+        // Creator
+        public string creator { get; set; }
 
         // Constructor
-        public WorkItem(string title, string content, string dateCreated) {
+        public WorkItem(string title, string content, string dateCreated, string creator) {
             this.title = title;
             this.content = content;
             this.dateCreated = dateCreated;
+            this.creator = creator;
+            doneStatus = false;
         }
 
         // Empty constructor

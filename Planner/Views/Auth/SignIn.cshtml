@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Sign in";
+}
+
+<h2>@ViewData["Header"]</h2>
+<br>
+<br>
+<br>
+<div class="login-form-area">
+    <form class="update-form" onsubmit="signIn(event)">
+        <h2>
+            Sign in
+        </h2>
+        <br>
+        <label for="emailLoginField">Email: </label><br>
+        <input type="text" id="email_login_field" name="email_login_field" placeholder="Email" class="field"><br>
+        <label for="passwordLoginField">Password: </label><br>
+        <input type="password" id="password_login_field" name="password_login_field" placeholder="Password" class="field"><br><br>
+        <input type="submit" value="Submit" class="button">
+        <a class="button" href="/auth/resetpassword">Forgot password?</a>
+    </form>
+</div>

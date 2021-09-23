@@ -1,1 +1,1 @@
-Access the main layout at the following URL: https://localhost:5001/api/v1/WorkItem/View
+Access the main layout at the following URL: https://localhost:5001

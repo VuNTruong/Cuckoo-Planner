@@ -22,6 +22,8 @@
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Microsoft.AspNetCore.Identity.UI.Views.V4.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Microsoft.AspNetCore.Identity.UI.dll
+/Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Microsoft.AspNetCore.JsonPatch.dll
+/Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Microsoft.AspNetCore.Razor.Language.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Microsoft.Bcl.AsyncInterfaces.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Microsoft.CodeAnalysis.dll
@@ -59,6 +61,7 @@
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/MimeKit.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Newtonsoft.Json.dll
+/Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Newtonsoft.Json.Bson.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/Owin.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/BouncyCastle.Crypto.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/bin/Debug/net5.0/System.Composition.AttributedModel.dll
@@ -152,8 +155,12 @@
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Planner.TagHelpers.output.cache
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Planner.RazorCoreGenerate.cache
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Auth/ForgotPassword.cshtml.g.cs
+/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Auth/ResetPassword.cshtml.g.cs
+/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Auth/ResetPasswordDone.cshtml.g.cs
+/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Auth/ResetPasswordEmailNotFound.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Auth/SignIn.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Auth/SignUp.cshtml.g.cs
+/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Auth/SignUpDone.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Shared/Error.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Shared/_Layout.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Shared/_LoginPartial.cshtml.g.cs
@@ -171,3 +178,4 @@
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/ref/Planner.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Planner.pdb
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Planner.genruntimeconfig.cache
+/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/User/AccountInfo.cshtml.g.cs

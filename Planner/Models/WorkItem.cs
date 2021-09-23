@@ -9,28 +9,31 @@ namespace Planner.Models
         public int Id { get; set; }
 
         // Work item title
-        public string title { get; set; }
+        public string Title { get; set; }
 
         // Work item content
-        public string content { get; set; }
+        public string Content { get; set; }
 
         // Date created of work item
-        public string dateCreated { get; set; }
+        public string DateCreated { get; set; }
         
         // Done status
-        public bool doneStatus { get; set; }
+        public bool DoneStatus { get; set; }
 
         // Creator
-        public string creator { get; set; }
+        public int CreatorId { get; set; }
 
         // Constructor
-        public WorkItem(string title, string content, string dateCreated, string creator) {
-            this.title = title;
-            this.content = content;
-            this.dateCreated = dateCreated;
-            this.creator = creator;
-            doneStatus = false;
+        public WorkItem(string Title, string Content, string DateCreated, int CreatorId) {
+            this.Title = Title;
+            this.Content = Content;
+            this.DateCreated = DateCreated;
+            this.CreatorId = CreatorId;
+            DoneStatus = false;
         }
+
+        // One WorkItem to will belong to only one UserProfile
+        public virtual UserProfile Creator { get; set; }
 
         // Empty constructor
         public WorkItem () { }

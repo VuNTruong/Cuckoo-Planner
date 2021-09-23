@@ -1,10 +1,10 @@
 ﻿<Properties StartupConfiguration="{85FE47FF-8155-4DBB-9DA2-01A836D75303}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Views/Auth/ForgotPassword.cshtml">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/wwwroot/js/workitem.js">
     <Files>
-      <File FileName="Planner/Views/Shared/_LoginPartial.cshtml" Line="28" Column="10" />
-      <File FileName="Planner/Views/Auth/SignIn.cshtml" Line="22" Column="7" />
-      <File FileName="Planner/Controllers/AuthController.cs" Line="38" Column="1" />
-      <File FileName="Planner/Views/Auth/ForgotPassword.cshtml" Line="11" Column="13" />
+      <File FileName="Planner/Controllers/UserAPIController.cs" Line="71" Column="1" />
+      <File FileName="Planner/Controllers/WorkItemController.cs" Line="65" Column="44" />
+      <File FileName="Planner/Views/Shared/_LoginPartial.cshtml" Line="27" Column="1" />
+      <File FileName="Planner/wwwroot/js/workitem.js" Line="41" Column="49" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -12,21 +12,19 @@
           <Node name="Planner" expanded="True">
             <Node name="Planner" expanded="True">
               <Node name="Controllers" expanded="True" />
-              <Node name="Data" expanded="True" />
-              <Node name="Mail" expanded="True" />
-              <Node name="Migrations" expanded="True" />
               <Node name="Models" expanded="True" />
+              <Node name="ViewModels" expanded="True" />
               <Node name="Views" expanded="True">
-                <Node name="Auth" expanded="True">
-                  <Node name="ForgotPassword.cshtml" selected="True" />
-                </Node>
+                <Node name="Auth" expanded="True" />
                 <Node name="Shared" expanded="True" />
+                <Node name="User" expanded="True" />
                 <Node name="Welcome" expanded="True" />
                 <Node name="WorkItem" expanded="True" />
               </Node>
               <Node name="wwwroot" expanded="True">
-                <Node name="css" expanded="True" />
-                <Node name="js" expanded="True" />
+                <Node name="js" expanded="True">
+                  <Node name="workitem.js" selected="True" />
+                </Node>
               </Node>
             </Node>
           </Node>

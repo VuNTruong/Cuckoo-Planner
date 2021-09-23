@@ -18,143 +18,157 @@ namespace Planner.Controllers
     public class WorkItemAPIController : Controller
     {
         // User manager and sign in manager
-        private readonly UserManager<User> userManager;
+        private readonly UserManager<User> UserManager;
 
-        public WorkItemAPIController(UserManager<User> userManager)
+        public WorkItemAPIController(UserManager<User> UserManager)
         {
             // Initialize user manager with DI
-            this.userManager = userManager;
+            this.UserManager = UserManager;
+        }
+
+        // The function to get user id of the currently logged in user (numeric)
+        public async Task<int> GetCurrentUserId()
+        {
+            // Get user id of the currently logged in user
+            string currentUserId = UserManager.GetUserId(HttpContext.User);
+
+            // The database context
+            var databaseContext = new DatabaseContext();
+
+            // Reference the database, include user identity object as well
+            var currentUserObject = (await databaseContext.UserProfiles
+                .Include(userProfile => userProfile.User)
+                .Where(userProfile => userProfile.User.Id == currentUserId)
+                .ToListAsync())[0];
+
+            // Return the obtained user id
+            return currentUserObject.Id;
         }
 
         // The function to get all work items in the database
         [HttpGet]
-        public async Task<JsonResult> getWorkItems()
+        public async Task<JsonResult> GetWorkItems()
         {
-            using (var db = new DatabaseContext())
-            {
-                // Start querying the database
-                var workItems = await db.WorkItems
-                    .ToListAsync();
+            // Database context
+            var databaseContext = new DatabaseContext();
 
-                // Prepare response data for the client
-                var responseData = new Dictionary<string, object>();
+            // Start querying the database
+            var WorkItems = await databaseContext.WorkItems
+                .Include(workItem => workItem.Creator)
+                .ToListAsync();
 
-                // Add data to the response data
-                Response.StatusCode = 200;
-                responseData.Add("status", "Done");
-                responseData.Add("data", workItems);
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
 
-                // Return response to the client
-                return new JsonResult(responseData);
-            }
+            // Add data to the response data
+            Response.StatusCode = 200;
+            responseData.Add("status", "Done");
+            responseData.Add("data", WorkItems);
+
+            // Return response to the client
+            return new JsonResult(responseData);
         }
 
         // The function to get all work items of the currently logged in user
         [HttpGet("getWorkItemsOfCurrentUser")]
-        public async Task<JsonResult> getWorkItemsOfCurrentUser()
+        public async Task<JsonResult> GetWorkItemsOfCurrentUser()
         {
-            using (var db = new DatabaseContext())
-            {
-                // Get user id of the currently logged in user
-                string currentUserId = userManager.GetUserId(HttpContext.User);
+            // Database context
+            var databaseContext = new DatabaseContext();
 
-                // Prepare response data for the client
-                var responseData = new Dictionary<string, object>();
+            // Call the function to get info of the currently logged in user
+            int currentUserId = await GetCurrentUserId();
 
-                // Reference the database to get work items created by the currently logged in user
-                var listOfWorkItems = await db.WorkItems.Where((workItem) =>
-                    workItem.creator == currentUserId
-                ).ToListAsync();
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
 
-                // Add data to the response data
-                Response.StatusCode = 200;
-                responseData.Add("status", "Done");
-                responseData.Add("data", listOfWorkItems);
+            // Reference the database to get work items created by the currently logged in user
+            var listOfWorkItems = await databaseContext.WorkItems.Where((workItem) =>
+                workItem.CreatorId == currentUserId
+            ).ToListAsync();
 
-                // Return response to the client
-                return new JsonResult(responseData);
-            }
+            // Add data to the response data
+            Response.StatusCode = 200;
+            responseData.Add("status", "Done");
+            responseData.Add("data", listOfWorkItems);
+
+            // Return response to the client
+            return new JsonResult(responseData);
         }
 
         // The function to create new work item in the database
         [HttpPost]
-        public async Task<JsonResult> createWorkItem()
+        public async Task<JsonResult> CreateWorkItem()
         {
-            using (var db = new DatabaseContext())
-            {
-                // Use this to read request body
-                var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
+            // The database context
+            using var databaseContext = new DatabaseContext();
 
-                // Convert JSON object into accessible object
-                var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
+            // Use this to read request body
+            var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
 
-                // Get user id of the currently logged in user
-                string currentUserId = userManager.GetUserId(HttpContext.User);
+            // Convert JSON object into accessible object
+            var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
 
-                // Reference the database to get user object of the currently logged in user
-                var userObject = (await db.Users.Where((userObject) =>
-                    userObject.Id == currentUserId
-                ).ToListAsync())[0];
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
 
-                // Create the new object which is going to be inserted into the database
-                WorkItem newWorkItem = new WorkItem(requestBody["title"], requestBody["content"], requestBody["dateCreated"], userObject.Id);
+            // Call the function to get user if of the currently logged in user
+            int currentUserId = await GetCurrentUserId();
 
-                // Start querying the database
-                await db.WorkItems
-                    .AddAsync(newWorkItem);
+            // Create the new object which is going to be inserted into the database
+            WorkItem NewWorkItem = new(requestBody["title"], requestBody["content"], requestBody["dateCreated"], currentUserId);
 
-                // Save changes
-                await db.SaveChangesAsync();
+            // Start querying the database
+            await databaseContext.WorkItems
+                .AddAsync(NewWorkItem);
 
-                // Prepare response data for the client
-                var responseData = new Dictionary<string, object>();
+            // Save changes
+            await databaseContext.SaveChangesAsync();
 
-                // Add data to the response data
-                Response.StatusCode = 201;
-                responseData.Add("status", "Done");
-                responseData.Add("data", newWorkItem);
+            // Add data to the response data
+            Response.StatusCode = 201;
+            responseData.Add("status", "Done");
+            responseData.Add("data", NewWorkItem);
 
-                // Return response to the client
-                return new JsonResult(responseData);
-            }
+            // Return response to the client
+            return new JsonResult(responseData);
         }
 
         //The function to delete a work item in the database
         [HttpDelete]
-        public async Task<JsonResult> deleteWorkItem()
+        public async Task<JsonResult> DeleteWorkItem()
         {
             // Get id of work item to be deleted
             int workItemIdToBeDeleted = int.Parse(Request.Query["workItemId"]);
 
-            using (var db = new DatabaseContext())
-            {
-                // Reference the database to get work item object of the item to be
-                // deleted
-                var workItemToBeDeleted = db.WorkItems
-                    .Single(workitem => workitem.Id == workItemIdToBeDeleted);
+            // Database context
+            var databaseContext = new DatabaseContext();
+            // Reference the database to get work item object of the item to be
+            // deleted
+            var workItemToBeDeleted = databaseContext.WorkItems
+                .Single(workitem => workitem.Id == workItemIdToBeDeleted);
 
-                // Delete the found work item
-                db.Remove(workItemToBeDeleted);
+            // Delete the found work item
+            databaseContext.Remove(workItemToBeDeleted);
 
-                // Save changes in the database
-                await db.SaveChangesAsync();
+            // Save changes in the database
+            await databaseContext.SaveChangesAsync();
 
-                // Prepare response data for the client
-                var responseData = new Dictionary<string, object>();
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
 
-                // Add data to the response data
-                Response.StatusCode = 200;
-                responseData.Add("status", "Done");
-                responseData.Add("data", "Task has been deleted");
+            // Add data to the response data
+            Response.StatusCode = 200;
+            responseData.Add("status", "Done");
+            responseData.Add("data", "Task has been deleted");
 
-                // Return response to the client
-                return new JsonResult(responseData);
-            }
+            // Return response to the client
+            return new JsonResult(responseData);
         }
 
         // The function to update a work item in the database
         [HttpPatch]
-        public async Task<JsonResult> updateWorkItem()
+        public async Task<JsonResult> UpdateWorkItem()
         {
             // Get id of work item to be updated
             int workItemIdToBeUpdated = int.Parse(Request.Query["workItemId"]);
@@ -178,19 +192,19 @@ namespace Planner.Controllers
                 {
                     if (entry.Key == "title")
                     {
-                        workItemToBeUpdated.title = (string)entry.Value;
+                        workItemToBeUpdated.Title = (string)entry.Value;
                     }
                     else if (entry.Key == "content")
                     {
-                        workItemToBeUpdated.content = (string)entry.Value;
+                        workItemToBeUpdated.Content = (string)entry.Value;
                     }
                     else if (entry.Key == "dateCreated")
                     {
-                        workItemToBeUpdated.dateCreated = (string)entry.Value;
+                        workItemToBeUpdated.DateCreated = (string)entry.Value;
                     }
                     else if (entry.Key == "doneStatus")
                     {
-                        workItemToBeUpdated.doneStatus = (bool)entry.Value;
+                        workItemToBeUpdated.DoneStatus = (bool)entry.Value;
                     }
                 }
 
@@ -208,6 +222,17 @@ namespace Planner.Controllers
                 // Return response to the client
                 return new JsonResult(responseData);
             }
+        }
+
+        // The function to delete all tasks in the database
+        [HttpDelete("deleteEverything")]
+        public async void DeleteEverything()
+        {
+            // The database context
+            var db = new DatabaseContext();
+
+            // Execute command and delete all tasks
+            await db.Database.ExecuteSqlRawAsync("DELETE FROM workitems");
         }
     }
 }

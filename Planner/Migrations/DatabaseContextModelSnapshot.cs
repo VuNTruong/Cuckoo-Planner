@@ -202,8 +202,8 @@ namespace Planner.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("fullName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UserProfileId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -215,7 +215,25 @@ namespace Planner.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("UserProfileId")
+                        .IsUnique();
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Planner.Models.UserProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("userprofiles");
                 });
 
             modelBuilder.Entity("Planner.Models.WorkItem", b =>
@@ -225,22 +243,24 @@ namespace Planner.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("content")
+                    b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("creator")
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DateCreated")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("dateCreated")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("doneStatus")
+                    b.Property<bool>("DoneStatus")
                         .HasColumnType("bit");
 
-                    b.Property<string>("title")
+                    b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("workitems");
                 });
@@ -294,6 +314,35 @@ namespace Planner.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Planner.Models.User", b =>
+                {
+                    b.HasOne("Planner.Models.UserProfile", "UserProfile")
+                        .WithOne("User")
+                        .HasForeignKey("Planner.Models.User", "UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("Planner.Models.WorkItem", b =>
+                {
+                    b.HasOne("Planner.Models.UserProfile", "Creator")
+                        .WithMany("WorkItems")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("Planner.Models.UserProfile", b =>
+                {
+                    b.Navigation("User");
+
+                    b.Navigation("WorkItems");
                 });
 #pragma warning restore 612, 618
         }

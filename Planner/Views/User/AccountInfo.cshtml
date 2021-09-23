@@ -1,0 +1,29 @@
+﻿@model Planner.ViewModels.UserViewModel
+@{
+    ViewData["Title"] = "Account info";
+}
+
+<h2>@ViewData["Header"]</h2>
+<br />
+<br />
+<div class="login-form-area">
+    <form class="update-form">
+        <h2>
+            Account info
+        </h2>
+        <br>
+
+        <label>Fullname: @Model.FullName</label><br>
+        <input type="text" id="fullname_account_settings" name="fullname_account_settings" placeholder="Username" class="field">
+        <br><br>
+
+        <label>Email: @Model.Email</label><br>
+        <input type="text" id="email_account_settings" name="email_account_settings" placeholder="Username" class="field"><br><br>
+
+        <label>Password: *********</label><br>
+        <button class="button">Change</button>
+        <br><br><br>
+
+        <input type="submit" value="Submit" class="button">
+    </form>
+</div>

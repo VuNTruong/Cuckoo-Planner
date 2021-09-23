@@ -21,6 +21,8 @@
     <None Remove="Microsoft.AspNetCore.Identity.UI" />
     <None Remove="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
     <None Remove="Views\SignIn\" />
+    <None Remove="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
+    <None Remove="Views\User\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -28,6 +30,7 @@
     <Folder Include="Migrations\" />
     <Folder Include="Mail\" />
     <Folder Include="Views\Auth\" />
+    <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.15.0" />
@@ -45,5 +48,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.10" />
   </ItemGroup>
 </Project>

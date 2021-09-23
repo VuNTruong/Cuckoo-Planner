@@ -18,6 +18,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using Planner.Mail;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Newtonsoft.Json;
 
 namespace Planner
 {
@@ -33,7 +34,9 @@ namespace Planner
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            );
 
             services.AddDbContext<DatabaseContext>(options =>
             {
@@ -66,6 +69,7 @@ namespace Planner
                 options.User.RequireUniqueEmail = true;
             });
 
+            // Add options for mail sending
             services.AddOptions();
             var mailsettings = Configuration.GetSection("MailSettings");
             services.Configure<MailSettings>(mailsettings);

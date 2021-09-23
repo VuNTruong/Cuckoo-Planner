@@ -39,6 +39,9 @@ namespace Planner.Controllers
         [HttpPost("signUp")]
         public async Task<JsonResult> createUser()
         {
+            // The database context
+            var databaseContext = new DatabaseContext();
+
             // Use this to read request body
             var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
 
@@ -60,10 +63,26 @@ namespace Planner.Controllers
                 return new JsonResult(responseData);
             }
 
+            // Create the new user profile object
+            var newUserProfileObject = new UserProfile
+            {
+                FullName = requestBody["fullName"]
+            };
+
+            // Add new user profile object to the table
+            await databaseContext.UserProfiles
+                .AddAsync(newUserProfileObject);
+
+            // Save changes
+            await databaseContext.SaveChangesAsync();
+
+            // Get user profile id of the created user profile
+            int createdUserProfileId = newUserProfileObject.Id;
+
             // Create the new user object
             var newUser = new User
             {
-                fullName = requestBody["fullName"],
+                UserProfileId = createdUserProfileId,
                 Email = requestBody["email"],
                 UserName = requestBody["email"]
             };
@@ -173,33 +192,6 @@ namespace Planner.Controllers
             return new JsonResult(responseData);
         }
 
-        // The function to get info of the currently logged in user
-        [HttpGet("getInfoOfCurrentUser")]
-        public async Task<JsonResult> getInfoOfCurrentUser()
-        {
-            // Get user id of the currently logged in user
-            string currentUserId = userManager.GetUserId(HttpContext.User);
-
-            // Create the database context object
-            var databaseContext = new DatabaseContext();
-
-            // Reference the database to get user object of the currently logged in user
-            var userObject = (await databaseContext.Users.Where((userObject) =>
-                userObject.Id == currentUserId
-            ).ToListAsync())[0];
-
-            // Prepare response data for the client
-            var responseData = new Dictionary<string, object>();
-
-            // Add data to the response data
-            Response.StatusCode = 200;
-            responseData.Add("status", "Done");
-            responseData.Add("data", userObject);
-
-            // Return response to the client
-            return new JsonResult(responseData);
-        }
-
         // The function to send password reset token to user with specified email address
         [HttpPost("sendPasswordResetEmail")]
         public async Task<JsonResult> sendEmail()
@@ -270,8 +262,26 @@ namespace Planner.Controllers
             // Get new password of the user
             string newPassword = requestBody["newPassword"];
 
+            // Get new password confirm value of the user
+            string newPasswordConfirm = requestBody["newPasswordConfirm"];
+
             // Create the database context object
             var databaseContext = new DatabaseContext();
+
+            // Prepare the response data
+            var responseData = new Dictionary<string, object>();
+
+            // Check to see if user confirm the password correctly or not
+            if (newPassword != newPasswordConfirm)
+            {
+                // Add data to the response data
+                Response.StatusCode = 400;
+                responseData.Add("status", "Not done");
+                responseData.Add("data", "Password confirm did not match");
+
+                // Return response to the client
+                return new JsonResult(responseData);
+            }
 
             // Reference the database to get user object of the user who needs to get password reset
             var userObject = (await databaseContext.Users.Where((userObject) =>
@@ -280,9 +290,6 @@ namespace Planner.Controllers
 
             // Call the function to start with password resetting procedure
             IdentityResult passwordResetResult = await userManager.ResetPasswordAsync(userObject, passwordResetToken, newPassword);
-
-            // Prepare the response data
-            var responseData = new Dictionary<string, object>();
 
             // If password is reset successfully, let the client know that
             if (passwordResetResult.Succeeded)
@@ -302,6 +309,15 @@ namespace Planner.Controllers
 
             // Return response to the client
             return new JsonResult(responseData);
+        }
+
+        [HttpDelete("deleteEveryUser")]
+        public async void deleteAll()
+        {
+            using (var db = new DatabaseContext())
+            {
+                await db.Database.ExecuteSqlRawAsync("DELETE FROM USERS");
+            }
         }
     }
 }

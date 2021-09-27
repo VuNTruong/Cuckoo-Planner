@@ -22,7 +22,12 @@ namespace Planner.Controllers
         // User manager and sign in manager
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
+
+        // Email sender
         private readonly IEmailSender emailSender;
+
+        // Database context
+        private readonly DatabaseContext databaseContext;
 
         public AuthAPIController(UserManager<User> userManager,
             SignInManager<User> signInManager, IEmailSender emailSender)
@@ -33,15 +38,15 @@ namespace Planner.Controllers
 
             // Initialize mail service
             this.emailSender = emailSender;
+
+            // Initialize database context
+            databaseContext = new DatabaseContext();
         }
 
         // The function to create new user in the database
         [HttpPost("signUp")]
-        public async Task<JsonResult> createUser()
+        public async Task<JsonResult> CreateUser()
         {
-            // The database context
-            var databaseContext = new DatabaseContext();
-
             // Use this to read request body
             var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
 
@@ -111,7 +116,7 @@ namespace Planner.Controllers
 
         // The function to sign a user in
         [HttpPost("signIn")]
-        public async Task<JsonResult> signIn()
+        public async Task<JsonResult> SignIn()
         {
             // Use this to read request body
             var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
@@ -146,7 +151,7 @@ namespace Planner.Controllers
 
         // The function to check if user is signed in or not
         [HttpGet("checkSignInStatus")]
-        public JsonResult checkSignInStatus()
+        public JsonResult CheckSignInStatus()
         {
             // Perform the checking operation and get the result
             var isSignedIn = signInManager.IsSignedIn(User);
@@ -175,7 +180,7 @@ namespace Planner.Controllers
 
         // The function to sign the user out
         [HttpPost("signOut")]
-        public async Task<JsonResult> signOut()
+        public async Task<JsonResult> Logout()
         {
             // Perform the signing out operation and get the result
             await signInManager.SignOutAsync();
@@ -194,7 +199,7 @@ namespace Planner.Controllers
 
         // The function to send password reset token to user with specified email address
         [HttpPost("sendPasswordResetEmail")]
-        public async Task<JsonResult> sendEmail()
+        public async Task<JsonResult> SendEmail()
         {
             // Use this to read request body
             var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
@@ -204,9 +209,6 @@ namespace Planner.Controllers
 
             // Get email of the user to get password reset token
             string userEmailToResetPassword = requestBody["userEmail"];
-
-            // Create the database context object
-            var databaseContext = new DatabaseContext();
 
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
@@ -245,7 +247,7 @@ namespace Planner.Controllers
 
         // The function to reset password for user with specified email address and reset password token
         [HttpPost("resetPassword")]
-        public async Task<JsonResult> resetPassword()
+        public async Task<JsonResult> ResetPassword()
         {
             // Use this to read request body
             var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
@@ -264,9 +266,6 @@ namespace Planner.Controllers
 
             // Get new password confirm value of the user
             string newPasswordConfirm = requestBody["newPasswordConfirm"];
-
-            // Create the database context object
-            var databaseContext = new DatabaseContext();
 
             // Prepare the response data
             var responseData = new Dictionary<string, object>();
@@ -312,12 +311,9 @@ namespace Planner.Controllers
         }
 
         [HttpDelete("deleteEveryUser")]
-        public async void deleteAll()
+        public async void DeleteAll()
         {
-            using (var db = new DatabaseContext())
-            {
-                await db.Database.ExecuteSqlRawAsync("DELETE FROM USERS");
-            }
+            await databaseContext.Database.ExecuteSqlRawAsync("DELETE FROM USERS");
         }
     }
 }

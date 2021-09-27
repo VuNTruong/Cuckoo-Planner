@@ -24,11 +24,11 @@ namespace Planner.Models
         public int CreatorId { get; set; }
 
         // Constructor
-        public WorkItem(string Title, string Content, string DateCreated, int CreatorId) {
-            this.Title = Title;
-            this.Content = Content;
-            this.DateCreated = DateCreated;
-            this.CreatorId = CreatorId;
+        public WorkItem(string title, string content, string dateCreated, int creatorId) {
+            Title = title;
+            Content = content;
+            DateCreated = dateCreated;
+            CreatorId = creatorId;
             DoneStatus = false;
         }
 

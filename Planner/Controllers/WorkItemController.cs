@@ -1,72 +1,127 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Planner.Data;
 using Planner.Models;
+using Planner.Utils;
 using Planner.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Planner.Controllers
 {
-    [Route("dashboard")]
+    [Route("main")]
     public class WorkItemController : Controller
     {
-        // User manager
-        private readonly UserManager<User> UserManager;
+        // Current user utils (this wil be used to get user id of the currently logged in user)
+        private readonly CurrentUserUtils currentUserUtils;
+
+        // List of work item view models
+        private List<WorkItemViewModel> listOfWorkItemViewModels;
 
         // Constructor
-        public WorkItemController(UserManager<User> UserManager)
+        public WorkItemController(IHttpContextAccessor httpContextAccessor)
         {
-            this.UserManager = UserManager;
+            // Initialize current user utils
+            currentUserUtils = new CurrentUserUtils(httpContextAccessor);
+
+            // Initialize work item view model
+            listOfWorkItemViewModels = new List<WorkItemViewModel>();
         }
 
-        // The function to get user id of the currently logged in user (numeric)
-        public async Task<int> GetCurrentUserId()
-        {
-            // Get user id of the currently logged in user
-            string currentUserId = UserManager.GetUserId(HttpContext.User);
-
-            // The database context
-            var databaseContext = new DatabaseContext();
-
-            // Reference the database, include user identity object as well
-            var currentUserObject = (await databaseContext.UserProfiles
-                .Include(userProfile => userProfile.User)
-                .Where(userProfile => userProfile.User.Id == currentUserId)
-                .ToListAsync())[0];
-
-            // Return thre obtained user id
-            return currentUserObject.Id;
-        }
-
-        [HttpGet("main")]
-        public async Task<IActionResult> Index()
+        [HttpGet("")]
+        public async Task<IActionResult> WorkItemOverview()
         {
             ViewData["Header"] = "Hello there!";
 
             // Database context
-            var DatabaseContext = new DatabaseContext();
+            var databaseContext = new DatabaseContext();
 
             // Call the function to get info of the currently logged in user
-            int CurrentUserId = await GetCurrentUserId();
+            int currentUserId = await currentUserUtils.GetCurrentUserId();
 
             // Reference the database to get work items created by the currently logged in user
-            List<WorkItem> ListOfWorkItems = await DatabaseContext.WorkItems.Where((workItem) =>
-                workItem.CreatorId == CurrentUserId
+            List<WorkItem> listOfWorkItems = await databaseContext.WorkItems.Where((workItem) =>
+                workItem.CreatorId == currentUserId
             ).ToListAsync();
 
-            // Initialize view model
-            var WorkItemViewModel = new WorkItemViewModel
+            // List of work item view models
+            //List<WorkItemViewModel> workItemViewModels = new List<WorkItemViewModel>();
+
+            // Loop through list of obtained work items and create work item
+            // view model out of them
+            foreach (var workItem in listOfWorkItems)
             {
-                WorkItems = ListOfWorkItems
+                WorkItemViewModel newWorkItemViewModel = new WorkItemViewModel
+                {
+                    Title = workItem.Title,
+                    Content = workItem.Content,
+                    Id = workItem.Id
+                };
+
+                // Add the newly created work item view model into the list
+                listOfWorkItemViewModels.Add(newWorkItemViewModel);
+            }
+
+            // Initialize view model
+            var workItemListViewModel = new WorkItemListViewModel
+            {
+                WorkItems = listOfWorkItemViewModels
             };
 
             // Return the view with updated view model
-            return View(WorkItemViewModel);
+            return View(workItemListViewModel);
+        }
+
+        [HttpPost("addMoreWorkItem")]
+        public async Task<IActionResult> WorkItemAddMore()
+        {
+            // Database context
+            var databaseContext = new DatabaseContext();
+
+            // Use this to read request body
+            var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
+
+            // Convert JSON object into accessible object
+            var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
+
+            // Call the function to get info of the currently logged in user
+            int currentUserId = await currentUserUtils.GetCurrentUserId();
+
+            // Create the new object which is going to be inserted into the database
+            WorkItem newWorkItem = new(requestBody["title"], requestBody["content"], requestBody["dateCreated"], currentUserId);
+
+            // Start querying the database
+            await databaseContext.WorkItems
+                .AddAsync(newWorkItem);
+
+            // Save changes
+            await databaseContext.SaveChangesAsync();
+
+            // Create new view model out of the new work item
+            WorkItemViewModel newWorkItemViewModel = new WorkItemViewModel
+            {
+                Title = newWorkItem.Title,
+                Content = newWorkItem.Content,
+                Id = newWorkItem.Id
+            };
+
+            // Add the newly created work item view model into the list
+            listOfWorkItemViewModels.Add(newWorkItemViewModel);
+
+            // Create the new work item list view model
+            var workItemListViewModel = new WorkItemListViewModel
+            {
+                WorkItems = listOfWorkItemViewModels
+            };
+
+            // Return the view with updated view model
+            return View(workItemListViewModel);
         }
     }
 }

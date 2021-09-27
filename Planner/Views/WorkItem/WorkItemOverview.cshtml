@@ -1,0 +1,29 @@
+﻿@*This will contain several WorkItemOverviewItems*@
+
+@model Planner.ViewModels.WorkItemListViewModel;
+@{
+    ViewData["Title"] = "List of Tasks";
+}
+
+<h2>@ViewData["Header"]</h2>
+
+<div class="add-more-work-area">
+    <p class="text-desc">Add more work</p>
+    <script src="~/js/workitem.js">
+    </script>
+    <div class="text-enter-area">
+        <textarea placeholder="Title" class="text-field" id="title_text_field"></textarea>
+        <textarea placeholder="Content" class="text-field" id="content_text_field"></textarea>
+    </div>
+    <button class="button" id="add_more_work_button" onclick="onAdd()">Add</button>
+</div>
+
+<div class="list-of-work-item">
+    @foreach (var workItem in Model.WorkItems)
+    {
+        @await Html.PartialAsync("_WorkItemOverviewItem", workItem);
+    }
+</div>
+
+<div class="update-task-area">
+</div>

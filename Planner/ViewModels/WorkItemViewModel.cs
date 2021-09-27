@@ -1,12 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using Planner.Models;
-
 namespace Planner.ViewModels
 {
     public class WorkItemViewModel
     {
-        // List of work items of the currently logged in user
-        public List<WorkItem> WorkItems { get; set; }
+        // Id of the work item
+        public int Id { get; set; }
+
+        // Title of the work item
+        public string Title { get; set; }
+
+        // Content of the work item
+        public string Content { get; set; }
     }
 }

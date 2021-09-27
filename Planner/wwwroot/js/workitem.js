@@ -62,7 +62,7 @@ function onAdd() {
 
     // Use Ajax to create new work item in the database
     $.ajax({
-        url: 'https://localhost:5001/api/v1/WorkItem',
+        url: 'https://localhost:5001/main/addMoreWorkItem',
         type: 'POST',
         data: JSON.stringify({
             "title": newTitle,
@@ -71,19 +71,26 @@ function onAdd() {
         }),
         dataType: 'json',
         cache: false,
-        success: function (responseData) {
-            // New work item is created at this point, add a new post to current list
-            $('.list-of-work-item').append(`
-                <div class="work-item">
-                    <p class="title">${responseData.data.title}</p>
-                    <p class="detail">${responseData.data.content}</p>
-                    <div class="options">
-                        <button class="button" id="${responseData.data.id}" onclick="onDelete(event.target.id)">Remove</a>
-                            <button class="button" id="${responseData.data.id}" onclick="openUpdateTaskMenu(event.target.id)">Update</button>
-                    </div>
-                </div>
-            `)
-        }
+        //success: function (responseData) {
+        //    //// New work item is created at this point, add a new post to current list
+        //    //$('.list-of-work-item').append(`
+        //    //    <div class="work-item">
+        //    //        <p class="title">${responseData.data.title}</p>
+        //    //        <p class="detail">${responseData.data.content}</p>
+        //    //        <div class="options">
+        //    //            <button class="button" id="${responseData.data.id}" onclick="onDelete(event.target.id)">Remove</a>
+        //    //                <button class="button" id="${responseData.data.id}" onclick="openUpdateTaskMenu(event.target.id)">Update</button>
+        //    //        </div>
+        //    //    </div>
+        //    //`)
+
+        //    $.ajax({
+        //        url: `https://localhost:5001/main?title=${responseData.data.title}&content=${responseData.data.content}&id=${responseData.data.id}`,
+        //        type: "POST",
+        //        dataType: "json",
+        //        cache: false
+        //    });
+        //}
     })
 }
 

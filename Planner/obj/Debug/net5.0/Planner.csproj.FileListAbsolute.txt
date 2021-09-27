@@ -165,9 +165,11 @@
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Shared/_Layout.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Shared/_LoginPartial.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Shared/_ValidationScriptsPartial.cshtml.g.cs
+/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/User/AccountInfo.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Welcome/Index.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/Welcome/Privacy.cshtml.g.cs
-/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/WorkItem/Index.cshtml.g.cs
+/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/WorkItem/WorkItemOverview.cshtml.g.cs
+/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/WorkItem/_WorkItemOverviewItem.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/_ViewImports.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/_ViewStart.cshtml.g.cs
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Planner.RazorTargetAssemblyInfo.cache
@@ -178,4 +180,3 @@
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/ref/Planner.dll
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Planner.pdb
 /Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Planner.genruntimeconfig.cache
-/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/Debug/net5.0/Razor/Views/User/AccountInfo.cshtml.g.cs

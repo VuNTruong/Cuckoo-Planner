@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Planner.Models;
 using Planner.Data;
 using Microsoft.EntityFrameworkCore;
 using Planner.ViewModels;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,15 +15,6 @@ namespace Planner.Controllers
     [Route("user")]
     public class UserController : Controller
     {
-        // User manager
-        private readonly UserManager<User> UserManager;
-
-        // Constructor
-        public UserController(UserManager<User> UserManager)
-        {
-            this.UserManager = UserManager;
-        }
-
         // The view where user can see account info
         [HttpGet("accountInfo")]
         public async Task<IActionResult> AccountInfo()
@@ -32,7 +22,7 @@ namespace Planner.Controllers
             ViewData["Header"] = "Account info";
 
             // Get user id of the currently logged in user
-            string currentUserId = UserManager.GetUserId(HttpContext.User);
+            string currentUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             // The database context
             var databaseContext = new DatabaseContext();

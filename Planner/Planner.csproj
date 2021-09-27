@@ -23,6 +23,7 @@
     <None Remove="Views\SignIn\" />
     <None Remove="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
     <None Remove="Views\User\" />
+    <None Remove="Utils\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -31,6 +32,7 @@
     <Folder Include="Mail\" />
     <Folder Include="Views\Auth\" />
     <Folder Include="Views\User\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.15.0" />

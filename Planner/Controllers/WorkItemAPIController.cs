@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Planner.Data;
 using Planner.Models;
-using Microsoft.AspNetCore.Identity;
+using Planner.Utils;
+using Microsoft.AspNetCore.Http;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,32 +18,14 @@ namespace Planner.Controllers
     [ApiController]
     public class WorkItemAPIController : Controller
     {
-        // User manager and sign in manager
-        private readonly UserManager<User> UserManager;
+        // Current user utils (this will be used to get user id of the currently logged in user)
+        private readonly CurrentUserUtils currentUserUtils;
 
-        public WorkItemAPIController(UserManager<User> UserManager)
+        // Constructor
+        public WorkItemAPIController(IHttpContextAccessor httpContextAccessor)
         {
-            // Initialize user manager with DI
-            this.UserManager = UserManager;
-        }
-
-        // The function to get user id of the currently logged in user (numeric)
-        public async Task<int> GetCurrentUserId()
-        {
-            // Get user id of the currently logged in user
-            string currentUserId = UserManager.GetUserId(HttpContext.User);
-
-            // The database context
-            var databaseContext = new DatabaseContext();
-
-            // Reference the database, include user identity object as well
-            var currentUserObject = (await databaseContext.UserProfiles
-                .Include(userProfile => userProfile.User)
-                .Where(userProfile => userProfile.User.Id == currentUserId)
-                .ToListAsync())[0];
-
-            // Return the obtained user id
-            return currentUserObject.Id;
+            // Initialize current user utils
+            currentUserUtils = new CurrentUserUtils(httpContextAccessor);
         }
 
         // The function to get all work items in the database
@@ -77,7 +60,7 @@ namespace Planner.Controllers
             var databaseContext = new DatabaseContext();
 
             // Call the function to get info of the currently logged in user
-            int currentUserId = await GetCurrentUserId();
+            int currentUserId = await currentUserUtils.GetCurrentUserId();
 
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
@@ -113,7 +96,7 @@ namespace Planner.Controllers
             var responseData = new Dictionary<string, object>();
 
             // Call the function to get user if of the currently logged in user
-            int currentUserId = await GetCurrentUserId();
+            int currentUserId = await currentUserUtils.GetCurrentUserId();
 
             // Create the new object which is going to be inserted into the database
             WorkItem NewWorkItem = new(requestBody["title"], requestBody["content"], requestBody["dateCreated"], currentUserId);
@@ -136,17 +119,17 @@ namespace Planner.Controllers
 
         //The function to delete a work item in the database
         [HttpDelete]
-        public async Task<JsonResult> DeleteWorkItem()
+        public async Task<JsonResult> DeleteWorkItem(int workItemId)
         {
             // Get id of work item to be deleted
-            int workItemIdToBeDeleted = int.Parse(Request.Query["workItemId"]);
+            //int workItemIdToBeDeleted = int.Parse(Request.Query["workItemId"]);
 
             // Database context
             var databaseContext = new DatabaseContext();
             // Reference the database to get work item object of the item to be
             // deleted
             var workItemToBeDeleted = databaseContext.WorkItems
-                .Single(workitem => workitem.Id == workItemIdToBeDeleted);
+                .Single(workitem => workitem.Id == workItemId);
 
             // Delete the found work item
             databaseContext.Remove(workItemToBeDeleted);

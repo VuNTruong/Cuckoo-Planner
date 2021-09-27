@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Planner.Models;
 using System.IO;
+using Planner.Utils;
+using Microsoft.AspNetCore.Http;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,14 +18,20 @@ namespace Planner.Controllers
     [ApiController]
     public class UserAPIController : Controller
     {
+        // Current user utils (this will be used to get user id of the currently logged in user)
+        private readonly CurrentUserUtils currentUserUtils;
+
         // User manager manager
-        private readonly UserManager<User> UserManager;
+        private readonly UserManager<User> userManager;
 
         // Constructor
-        public UserAPIController(UserManager<User> UserManager)
+        public UserAPIController(UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
         {
             // Initialize user manager with DI
-            this.UserManager = UserManager;
+            this.userManager = userManager;
+
+            // Initialize current user utils
+            currentUserUtils = new CurrentUserUtils(httpContextAccessor);
         }
 
         // The function to get all users
@@ -41,23 +49,23 @@ namespace Planner.Controllers
                 .Include(userProfile => userProfile.User).ToListAsync();
 
             // Prepare response data for the client
-            var ResponseData = new Dictionary<string, object>();
+            var responseData = new Dictionary<string, object>();
 
             // Add data to response data
             Response.StatusCode = 200;
-            ResponseData.Add("status", "Done");
-            ResponseData.Add("data", listOfUsers);
+            responseData.Add("status", "Done");
+            responseData.Add("data", listOfUsers);
 
             // Return response to the client
-            return new JsonResult(ResponseData);
+            return new JsonResult(responseData);
         }
 
         // The function to get info of the currently logged in user
         [HttpGet("getCurrentUserInfo")]
         public async Task<JsonResult> GetCurrentUserInfo()
         {
-            // Get user id of the currently logged in user
-            string currentUserId = UserManager.GetUserId(HttpContext.User);
+            // Call the function to get user id of the currently logged in user
+            int currentUserId = await currentUserUtils.GetCurrentUserId();
 
             // The database context
             using var databaseContext = new DatabaseContext();
@@ -66,7 +74,7 @@ namespace Planner.Controllers
             var currentUserObject = (await databaseContext.UserProfiles
                 .Include(userProfile => userProfile.User)
                 .Include(userProfile => userProfile.WorkItems)
-                .Where((userProfile) => userProfile.User.Id == currentUserId)
+                .Where((userProfile) => userProfile.Id == currentUserId)
                 .ToListAsync())[0];
 
             // Prepare response data for the client
@@ -94,14 +102,11 @@ namespace Planner.Controllers
             // Prepare response for the client
             var responseData = new Dictionary<string, object>();
 
-            // Get user id of the currently logged in user
-            string currentUserId = UserManager.GetUserId(HttpContext.User);
-
-            // Find the user object of the currently logged in user
-            var currentUserObject = await UserManager.FindByIdAsync(currentUserId);
+            // Call the function to get info of the currently logged in user
+            User currentUserObject = await currentUserUtils.GetCurrentUserObject();
 
             // Start with password changing here
-            var result = await UserManager.ChangePasswordAsync(currentUserObject, requestBody["currentPassword"], requestBody["newPassword"]);
+            var result = await userManager.ChangePasswordAsync(currentUserObject, requestBody["currentPassword"], requestBody["newPassword"]);
 
             // Check to see if result of the password change is successful or not
             if (result.Succeeded)
@@ -135,18 +140,15 @@ namespace Planner.Controllers
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
 
-            // Get user id of the currently logged in user
-            string currentUserId = UserManager.GetUserId(HttpContext.User);
-
-            // Find the user object of the currently logged in user
-            var currentUserObject = await UserManager.FindByIdAsync(currentUserId);
+            // Get user object of the currently logged in user
+            User currentUserObject = await currentUserUtils.GetCurrentUserObject();
 
             // Change username and email
             currentUserObject.Email = requestBody["newEmail"];
             currentUserObject.UserName = requestBody["newEmail"];
 
             // Update the changes
-            await UserManager.UpdateAsync(currentUserObject);
+            await userManager.UpdateAsync(currentUserObject);
 
             // Add data to the response data
             Response.StatusCode = 200;

@@ -1,21 +1,46 @@
-// The function to open update passwor menu
-function openUpdatePasswordMenu() {
+// The function to open update password menu
+function openUpdatePasswordMenu(event) {
+    // Prevent any default
+    event.preventDefault();
+
     // Append update password menu into update password area
-    $('.update-password-area').append(`
-        <div class="update-backdrop" id="update-password-backdrop" onclick="closeUpdateTaskMenu()"></div>
-        <div class="update-menu" id="update-password-menu">
+    $('.update-user-info-area').append(`
+        <div class="update-backdrop" id="update-user-info-backdrop" onclick="closeUpdateUserInfoMenu()"></div>
+        <div class="update-menu" id="update-user-info-menu">
             <form class="update-form" onsubmit="onUpdatePassword()">
                 <h2>
                     Update password
                 </h2>
-                <label for="title">Old password:</label><br>
-                <input type="text" id="old_password_password_update_field" name="title" class="field"><br>
+                <label>Old password:</label><br>
+                <input type="password" id="old_password_password_update_field" class="field" placeholder="Old password"><br>
 
-                <label for="content">New password:</label><br>
-                <input type="text" id="new_password_password_update_field" name="content" class="field"><br>
+                <label>New password:</label><br>
+                <input type="password" id="new_password_password_update_field" class="field" placeholder="New password"><br>
                 
-                <label for="content">New password confirm:</label><br>
-                <input type="text" id="confirm_new_password_password_update_field" name="content" class="field"><br><br>
+                <label>New password confirm:</label><br>
+                <input type="password" id="confirm_new_password_password_update_field" class="field" placeholder="New password confirm"><br><br>
+
+                <input type="submit" value="Submit" class="button">
+            </form>
+        </div>
+    `)
+}
+
+// The function to open update email menu
+function openUpdateEmailMenu(event) {
+    // Prevent any default
+    event.preventDefault();
+
+    // Append update email menu into update menu area
+    $('.update-user-info-area').append(`
+        <div class="update-backdrop" id="update-user-info-backdrop" onclick="closeUpdateUserInfoMenu()"></div>
+        <div class="update-menu" id="update-user-info-menu">
+            <form class="update-form" onsubmit="onUpdateEmail()">
+                <h2>
+                    Update email
+                </h2>
+                <label>New email:</label><br>
+                <input type="text" id="new_email_email_update_field" class="field" placeholder="New email"><br><br>
 
                 <input type="submit" value="Submit" class="button">
             </form>
@@ -24,10 +49,12 @@ function openUpdatePasswordMenu() {
 }
 
 // The function to close update password menu
-function closeUpdatePasswordMenu() {
+function closeUpdateUserInfoMenu() {
+    console.log("Is closing");
+
     // Remove the update backdrop and update menu from the view
-    $("div").remove('#update-password-backdrop');
-    $("div").remove('#update-password-menu');
+    $("div").remove('#update-user-info-backdrop');
+    $("div").remove('#update-user-info-menu');
 }
 
 // The function to update password for the currently logged in user
@@ -53,7 +80,30 @@ function onUpdatePassword() {
             "newPasswordConfirm": newPasswordConfirm
         }),
         success: function (responseData) {
-            console.log("Password has been updated");
+            // Call the function to dismiss the menu
+            closeUpdateUserInfoMenu();
+        },
+        error: function (responseData) {
+            console.log(`There seem to be an error ${responseData}`);
+        }
+    })
+}
+
+// The function to update email for the currently logged in user
+function onUpdateEmail() {
+    // Get value of the entered new email
+    const newEmail = document.getElementById("new_email_email_update_field").value;
+
+    // Use Ajax to start updating email for the user
+    $.ajax({
+        url: "https://localhost:5001/api/v1/user/changeEmail",
+        type: "PATCH",
+        dataType: JSON.stringify({
+            "newEmail": newEmail
+        }),
+        success: function (responseData) {
+            // Call the function to dismiss the menu
+            closeUpdateUserInfoMenu();
         },
         error: function (responseData) {
             console.log(`There seem to be an error ${responseData}`);

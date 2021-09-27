@@ -8,6 +8,7 @@
 <br />
 <div class="login-form-area">
     <form class="update-form">
+        <script src="~/js/user.js"></script>
         <h2>
             Account info
         </h2>
@@ -18,12 +19,14 @@
         <br><br>
 
         <label>Email: @Model.Email</label><br>
-        <input type="text" id="email_account_settings" name="email_account_settings" placeholder="Username" class="field"><br><br>
+        <button class="button" onclick="openUpdateEmailMenu(event)">Update email</button><br><br>
 
         <label>Password: *********</label><br>
-        <button class="button">Change</button>
+        <button class="button" onclick="openUpdatePasswordMenu(event)">Update password</button>
         <br><br><br>
 
         <input type="submit" value="Submit" class="button">
     </form>
 </div>
+
+<div class="update-user-info-area"></div>

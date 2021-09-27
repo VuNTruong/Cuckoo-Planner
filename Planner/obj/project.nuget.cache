@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "mioh7ExY98RLoAz1kFLeq0pBhod08rDgZVfOXwrqyqwd/K6BNmo8EdJEz/XVyz9ev4OgMwqRo9p1iNh14/dINA==",
+  "dgSpecHash": "lwiiITpxFbtGQascVrwEUXjca1Q9oZyzbBO/dX47yGbIkRRUrUE9KgMWAJdq9oesugQctLTUP9BgMFJl2VYQng==",
   "success": true,
-  "projectFilePath": "/Users/vntruong/Documents/Visual Studio/Planner/Planner/Planner.csproj",
+  "projectFilePath": "/Users/vntruong/Documents/VS/Planner/Planner.csproj",
   "expectedPackageFiles": [
     "/Users/vntruong/.nuget/packages/entityframework/6.1.0/entityframework.6.1.0.nupkg.sha512",
     "/Users/vntruong/.nuget/packages/humanizer.core/2.8.26/humanizer.core.2.8.26.nupkg.sha512",

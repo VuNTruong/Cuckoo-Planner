@@ -144,7 +144,8 @@ function signOut(event) {
         success: function (responseData) {
             // Go to the welcome page
             window.location.href = "/"
-        }
+        },
+        contentType: "application/json"
     })
 }
 

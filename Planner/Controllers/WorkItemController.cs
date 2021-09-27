@@ -18,6 +18,11 @@ namespace Planner.Controllers
     [Route("main")]
     public class WorkItemController : Controller
     {
+        // WorkItem object which will be used when performing CRUD operations with work items
+        [BindProperty]
+        [FromBody]
+        public WorkItem WorkItem { get; set; }
+
         // Current user utils (this wil be used to get user id of the currently logged in user)
         private readonly CurrentUserUtils currentUserUtils;
 
@@ -84,21 +89,15 @@ namespace Planner.Controllers
             // Database context
             var databaseContext = new DatabaseContext();
 
-            // Use this to read request body
-            var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
-
-            // Convert JSON object into accessible object
-            var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
-
             // Call the function to get info of the currently logged in user
             int currentUserId = await currentUserUtils.GetCurrentUserId();
 
-            // Create the new object which is going to be inserted into the database
-            WorkItem newWorkItem = new(requestBody["title"], requestBody["content"], requestBody["dateCreated"], currentUserId);
+            // Update user id of the work item creator
+            WorkItem.CreatorId = currentUserId;
 
             // Start querying the database
             await databaseContext.WorkItems
-                .AddAsync(newWorkItem);
+                .AddAsync(WorkItem);
 
             // Save changes
             await databaseContext.SaveChangesAsync();
@@ -106,9 +105,9 @@ namespace Planner.Controllers
             // Create new view model out of the new work item
             WorkItemViewModel newWorkItemViewModel = new WorkItemViewModel
             {
-                Title = newWorkItem.Title,
-                Content = newWorkItem.Content,
-                Id = newWorkItem.Id
+                Title = WorkItem.Title,
+                Content = WorkItem.Content,
+                Id = WorkItem.Id
             };
 
             // Add the newly created work item view model into the list

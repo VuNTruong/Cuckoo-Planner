@@ -10,6 +10,7 @@ using Planner.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Planner.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,6 +20,13 @@ namespace Planner.Controllers
     [ApiController]
     public class AuthAPIController : Controller
     {
+        //[BindProperty]
+        public SignUpViewModel SignUpViewModel { get; set; }
+
+        // Login ViewModel which will be used for login operation
+        //[BindProperty]
+        public LoginViewModel LoginViewModel { get; set; }
+        
         // User manager and sign in manager
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
@@ -47,31 +55,43 @@ namespace Planner.Controllers
         [HttpPost("signUp")]
         public async Task<JsonResult> CreateUser()
         {
-            // Use this to read request body
-            var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
-
-            // Convert JSON object into accessible object
-            var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
-
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
 
-            // Check to see if user verified password correctly or not
-            if (requestBody["password"] != requestBody["passwordConfirm"])
+            var viewModel = SignUpViewModel;
+
+            if (ModelState.IsValid)
             {
                 // Add data to the response data
-                Response.StatusCode = 400;
-                responseData.Add("status", "Not done");
-                responseData.Add("data", "Password and password confirm do not match");
+                Response.StatusCode = 500;
+                responseData.Add("status", "Uh Oh");
+                responseData.Add("data", "Oops, there seems to be an error here ");
 
                 // Return response to the client
                 return new JsonResult(responseData);
             }
+            //// Use this to read request body
+            //var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
+
+            //// Convert JSON object into accessible object
+            //var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
+
+            //// Check to see if user verified password correctly or not
+            //if (SignUpViewModel.Password != SignUpViewModel.PasswordConfirm)
+            //{
+            //    // Add data to the response data
+            //    Response.StatusCode = 400;
+            //    responseData.Add("status", "Not done");
+            //    responseData.Add("data", "Password and password confirm do not match");
+
+            //    // Return response to the client
+            //    return new JsonResult(responseData);
+            //}
 
             // Create the new user profile object
             var newUserProfileObject = new UserProfile
             {
-                FullName = requestBody["fullName"]
+                FullName = SignUpViewModel.FullName
             };
 
             // Add new user profile object to the table
@@ -88,12 +108,12 @@ namespace Planner.Controllers
             var newUser = new User
             {
                 UserProfileId = createdUserProfileId,
-                Email = requestBody["email"],
-                UserName = requestBody["email"]
+                Email = SignUpViewModel.Email,
+                UserName = SignUpViewModel.Email
             };
 
             // Perform the sign up operation and get the result
-            var result = await userManager.CreateAsync(newUser, requestBody["password"]);
+            var result = await userManager.CreateAsync(newUser, SignUpViewModel.Password);
 
             if (result.Succeeded)
             {
@@ -118,14 +138,8 @@ namespace Planner.Controllers
         [HttpPost("signIn")]
         public async Task<JsonResult> SignIn()
         {
-            // Use this to read request body
-            var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
-
-            // Convert JSON object into accessible object
-            var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
-
             // Perform the sign in operation and get the result
-            var result = await signInManager.PasswordSignInAsync(requestBody["email"], requestBody["password"], true, false);
+            var result = await signInManager.PasswordSignInAsync(LoginViewModel.Email, LoginViewModel.Password, true, false);
 
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();

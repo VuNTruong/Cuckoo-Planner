@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Planner.Models
 {
@@ -9,9 +12,11 @@ namespace Planner.Models
         public int Id { get; set; }
 
         // Work item title
+        [Required]
         public string Title { get; set; }
 
         // Work item content
+        [Required]
         public string Content { get; set; }
 
         // Date created of work item
@@ -21,6 +26,7 @@ namespace Planner.Models
         public bool DoneStatus { get; set; }
 
         // Creator
+        //[FromQuery(Name = "creatorId")]
         public int CreatorId { get; set; }
 
         // Constructor

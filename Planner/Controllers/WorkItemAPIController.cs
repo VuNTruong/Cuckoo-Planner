@@ -18,6 +18,11 @@ namespace Planner.Controllers
     [ApiController]
     public class WorkItemAPIController : Controller
     {
+        // WorkItem object which will be used when performing CRUD operations with work items
+        [BindProperty]
+        [FromBody]
+        public WorkItem WorkItem { get; set; }
+
         // Current user utils (this will be used to get user id of the currently logged in user)
         private readonly CurrentUserUtils currentUserUtils;
 
@@ -84,13 +89,7 @@ namespace Planner.Controllers
         public async Task<JsonResult> CreateWorkItem()
         {
             // The database context
-            using var databaseContext = new DatabaseContext();
-
-            // Use this to read request body
-            var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
-
-            // Convert JSON object into accessible object
-            var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
+            var databaseContext = new DatabaseContext();
 
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
@@ -98,12 +97,12 @@ namespace Planner.Controllers
             // Call the function to get user if of the currently logged in user
             int currentUserId = await currentUserUtils.GetCurrentUserId();
 
-            // Create the new object which is going to be inserted into the database
-            WorkItem NewWorkItem = new(requestBody["title"], requestBody["content"], requestBody["dateCreated"], currentUserId);
+            // Update user id of the work item creator
+            WorkItem.CreatorId = currentUserId;
 
             // Start querying the database
             await databaseContext.WorkItems
-                .AddAsync(NewWorkItem);
+                .AddAsync(WorkItem);
 
             // Save changes
             await databaseContext.SaveChangesAsync();
@@ -111,7 +110,7 @@ namespace Planner.Controllers
             // Add data to the response data
             Response.StatusCode = 201;
             responseData.Add("status", "Done");
-            responseData.Add("data", NewWorkItem);
+            responseData.Add("data", WorkItem);
 
             // Return response to the client
             return new JsonResult(responseData);
@@ -121,11 +120,9 @@ namespace Planner.Controllers
         [HttpDelete]
         public async Task<JsonResult> DeleteWorkItem(int workItemId)
         {
-            // Get id of work item to be deleted
-            //int workItemIdToBeDeleted = int.Parse(Request.Query["workItemId"]);
-
             // Database context
             var databaseContext = new DatabaseContext();
+
             // Reference the database to get work item object of the item to be
             // deleted
             var workItemToBeDeleted = databaseContext.WorkItems
@@ -156,55 +153,30 @@ namespace Planner.Controllers
             // Get id of work item to be updated
             int workItemIdToBeUpdated = int.Parse(Request.Query["workItemId"]);
 
-            object type = workItemIdToBeUpdated.GetType();
+            // Database context
+            var databaseContext = new DatabaseContext();
 
-            using (var db = new DatabaseContext())
-            {
-                // Use this to read request body
-                var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
+            // Reference the database to get object of the work item to be updated
+            var workItemToBeUpdated = databaseContext.WorkItems
+                .Single((workItem) => workItem.Id == workItemIdToBeUpdated);
 
-                // Convert JSON object into accessible object
-                var requestBody = JsonConvert.DeserializeObject<Dictionary<string, object>>(inputData);
+            // Update the work item
+            workItemToBeUpdated.Content = WorkItem.Content;
+            workItemToBeUpdated.Title = WorkItem.Title;
 
-                // Reference the database to get object of the work item to be updated
-                var workItemToBeUpdated = db.WorkItems
-                    .Single((workItem) => workItem.Id == workItemIdToBeUpdated);
+            // Update changes in the database
+            await databaseContext.SaveChangesAsync();
 
-                // Make changes on the work item based on request body
-                foreach (KeyValuePair<string, object> entry in requestBody)
-                {
-                    if (entry.Key == "title")
-                    {
-                        workItemToBeUpdated.Title = (string)entry.Value;
-                    }
-                    else if (entry.Key == "content")
-                    {
-                        workItemToBeUpdated.Content = (string)entry.Value;
-                    }
-                    else if (entry.Key == "dateCreated")
-                    {
-                        workItemToBeUpdated.DateCreated = (string)entry.Value;
-                    }
-                    else if (entry.Key == "doneStatus")
-                    {
-                        workItemToBeUpdated.DoneStatus = (bool)entry.Value;
-                    }
-                }
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
 
-                // Update changes in the database
-                await db.SaveChangesAsync();
+            // Add data to the response data
+            Response.StatusCode = 200;
+            responseData.Add("status", "Done");
+            responseData.Add("data", workItemToBeUpdated);
 
-                // Prepare response data for the client
-                var responseData = new Dictionary<string, object>();
-
-                // Add data to the response data
-                Response.StatusCode = 200;
-                responseData.Add("status", "Done");
-                responseData.Add("data", workItemToBeUpdated);
-
-                // Return response to the client
-                return new JsonResult(responseData);
-            }
+            // Return response to the client
+            return new JsonResult(responseData);
         }
 
         // The function to delete all tasks in the database

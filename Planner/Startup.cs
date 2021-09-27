@@ -37,7 +37,9 @@ namespace Planner
             // Add this in order to access HTTP context
             services.AddHttpContextAccessor();
 
-            services.AddControllersWithViews().AddNewtonsoftJson(options =>
+            services.AddControllersWithViews(options => {
+                options.AllowEmptyInputInBodyModelBinding = true;
+            }).AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             );
 

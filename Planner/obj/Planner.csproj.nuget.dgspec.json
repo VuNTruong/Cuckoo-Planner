@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/vntruong/Documents/Visual Studio/Planner/Planner/Planner.csproj": {}
+    "/Users/vntruong/Documents/VS/Planner/Planner.csproj": {}
   },
   "projects": {
-    "/Users/vntruong/Documents/Visual Studio/Planner/Planner/Planner.csproj": {
+    "/Users/vntruong/Documents/VS/Planner/Planner.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/vntruong/Documents/Visual Studio/Planner/Planner/Planner.csproj",
+        "projectUniqueName": "/Users/vntruong/Documents/VS/Planner/Planner.csproj",
         "projectName": "Planner",
-        "projectPath": "/Users/vntruong/Documents/Visual Studio/Planner/Planner/Planner.csproj",
+        "projectPath": "/Users/vntruong/Documents/VS/Planner/Planner.csproj",
         "packagesPath": "/Users/vntruong/.nuget/packages/",
-        "outputPath": "/Users/vntruong/Documents/Visual Studio/Planner/Planner/obj/",
+        "outputPath": "/Users/vntruong/Documents/VS/Planner/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/vntruong/.config/NuGet/NuGet.Config"

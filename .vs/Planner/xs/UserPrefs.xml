@@ -1,13 +1,14 @@
 ﻿<Properties StartupConfiguration="{85FE47FF-8155-4DBB-9DA2-01A836D75303}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Controllers/WorkItemController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Controllers/AuthAPIController.cs">
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Planner" expanded="True">
             <Node name="Planner" expanded="True">
               <Node name="Controllers" expanded="True">
-                <Node name="WorkItemController.cs" selected="True" />
+                <Node name="AuthAPIController.cs" selected="True" />
               </Node>
+              <Node name="Data" expanded="True" />
               <Node name="Models" expanded="True" />
               <Node name="Utils" expanded="True" />
               <Node name="ViewModels" expanded="True" />
@@ -30,7 +31,12 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthAPIController.cs" relfile="Planner/Controllers/AuthAPIController.cs" line="63" column="1" />
+      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthAPIController.cs" relfile="Planner/Controllers/AuthAPIController.cs" line="59" column="1" />
+      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthAPIController.cs" relfile="Planner/Controllers/AuthAPIController.cs" line="121" column="1" />
+      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthAPIController.cs" relfile="Planner/Controllers/AuthAPIController.cs" line="128" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
 </Properties>

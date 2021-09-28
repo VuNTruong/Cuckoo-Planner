@@ -1,30 +1,49 @@
-﻿@{
+﻿@using Planner.ViewModels;
+@model Planner.ViewModels.SignUpViewModel;
+
+@{
     ViewData["Title"] = "Sign up";
 }
 
 <h2>@ViewData["Header"]</h2>
 <br>
 <br>
-<br>
 <div class="login-form-area">
     <script src="~/js/auth.js"></script>
-    <form class="update-form" onsubmit="signUp(event)">
+    <form class="update-form" action="SignUpAction" method="post">
         <h2>
             Sign up
         </h2>
+
         <br>
         <label for="fullNameSignUpField">Fullname:</label><br>
-        <input type="text" , id="fullname_signup_field" name="fullname_signup_field" placeholder="Fullname" class="field"><br>
+        <input type="text" , id="fullname_signup_field" name="FullName" placeholder="Fullname" class="field"><br>
 
+        <br>
         <label for="emailSignUpField">Email: </label><br>
-        <input type="text" id="email_signup_field" name="email_signup_field" placeholder="Email" class="field"><br>
+        <input type="text" id="email_signup_field" name="Email" placeholder="Email" class="field"><br>
 
+        <br>
         <label for="passwordSignUpField">Password: </label><br>
-        <input type="password" id="password_signup_field" name="password_signup_field" placeholder="Password" class="field"><br>
+        <input type="password" id="password_signup_field" name="Password" placeholder="Password" class="field"><br>
 
+        <br>
         <label for="passwordSignUpField">Password confirm: </label><br>
-        <input type="password" id="password_confirm_signup_field" name="password_confirm_signup_field" placeholder="Password" class="field"><br>
+        <input type="password" id="password_confirm_signup_field" name="PasswordConfirm" placeholder="Password" class="field"><br>
 
+        <br>
         <input type="submit" value="Submit" class="button">
     </form>
 </div>
+
+@if (Model != null)
+{
+    // Create validation error view model
+    ValidationErrorViewModel validationErrorViewModel = new ValidationErrorViewModel
+    {
+        ListOfErrors = Model.ValidationErrors
+    };
+
+    // Append the Partial view
+    @await Html.PartialAsync("~/Views/Error/_SideValidationErrorShowPartial.cshtml", validationErrorViewModel);
+}

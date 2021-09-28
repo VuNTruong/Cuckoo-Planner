@@ -1,24 +1,32 @@
 ﻿<Properties StartupConfiguration="{85FE47FF-8155-4DBB-9DA2-01A836D75303}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Controllers/AuthAPIController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Views/Error/_SideValidationErrorShowPartial.cshtml">
+    <Files>
+      <File FileName="Planner/ViewModels/CreateNewPasswordViewModel.cs" Line="29" Column="2" />
+      <File FileName="Planner/Controllers/AuthController.cs" Line="175" Column="14" />
+      <File FileName="Planner/Views/Auth/SignUp.cshtml" Line="34" Column="13" />
+      <File FileName="Planner/Views/Auth/SignIn.cshtml" Line="26" Column="26" />
+      <File FileName="Planner/Views/Error/_SideValidationErrorShowPartial.cshtml" Line="9" Column="14" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Planner" expanded="True">
             <Node name="Planner" expanded="True">
-              <Node name="Controllers" expanded="True">
-                <Node name="AuthAPIController.cs" selected="True" />
-              </Node>
+              <Node name="Controllers" expanded="True" />
               <Node name="Data" expanded="True" />
               <Node name="Models" expanded="True" />
               <Node name="Utils" expanded="True" />
               <Node name="ViewModels" expanded="True" />
               <Node name="Views" expanded="True">
                 <Node name="Auth" expanded="True" />
+                <Node name="Error" expanded="True">
+                  <Node name="_SideValidationErrorShowPartial.cshtml" selected="True" />
+                </Node>
                 <Node name="Shared" expanded="True" />
-                <Node name="User" expanded="True" />
                 <Node name="WorkItem" expanded="True" />
               </Node>
               <Node name="wwwroot" expanded="True">
+                <Node name="css" expanded="True" />
                 <Node name="js" expanded="True" />
               </Node>
             </Node>
@@ -32,10 +40,9 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthAPIController.cs" relfile="Planner/Controllers/AuthAPIController.cs" line="63" column="1" />
-      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthAPIController.cs" relfile="Planner/Controllers/AuthAPIController.cs" line="59" column="1" />
-      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthAPIController.cs" relfile="Planner/Controllers/AuthAPIController.cs" line="121" column="1" />
-      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthAPIController.cs" relfile="Planner/Controllers/AuthAPIController.cs" line="128" column="1" />
+      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthController.cs" relfile="Planner/Controllers/AuthController.cs" line="170" column="1" />
+      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthController.cs" relfile="Planner/Controllers/AuthController.cs" line="171" column="1" />
+      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthController.cs" relfile="Planner/Controllers/AuthController.cs" line="174" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />

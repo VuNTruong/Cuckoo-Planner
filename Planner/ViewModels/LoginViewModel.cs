@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +9,13 @@ namespace Planner.ViewModels
     {
         // Login email
         [Required]
-        [FromBody]
         public string Email { get; set; }
 
         // Login password
-        [FromBody]
+        [Required]
         public string Password { get; set; }
+
+        // List of login validation error
+        public List<string> LoginValidationErrors { get; set; }
     }
 }

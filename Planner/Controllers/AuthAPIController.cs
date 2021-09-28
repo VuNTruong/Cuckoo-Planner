@@ -24,7 +24,6 @@ namespace Planner.Controllers
         public SignUpViewModel SignUpViewModel { get; set; }
 
         // Login ViewModel which will be used for login operation
-        //[BindProperty]
         public LoginViewModel LoginViewModel { get; set; }
         
         // User manager and sign in manager

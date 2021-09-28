@@ -343,6 +343,7 @@
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Auth/SignIn.cshtml.g.cs
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Auth/SignUp.cshtml.g.cs
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Auth/SignUpDone.cshtml.g.cs
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Error/_SideValidationErrorShowPartial.cshtml.g.cs
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Shared/Error.cshtml.g.cs
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Shared/_Layout.cshtml.g.cs
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Shared/_LoginPartial.cshtml.g.cs

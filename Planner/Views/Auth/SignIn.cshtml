@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Planner.ViewModels;
+@model Planner.ViewModels.LoginViewModel;
+
+@{
     ViewData["Title"] = "Sign in";
 }
 
@@ -8,16 +11,30 @@
 <br>
 <div class="login-form-area">
     <script src="~/js/auth.js"></script>
-    <form class="update-form" onsubmit="signIn(event)">
+    <form class="update-form" action="SignInAction" method="post">
         <h2>
             Sign in
         </h2>
         <br>
         <label for="emailLoginField">Email: </label><br>
-        <input type="text" id="email_login_field" name="email_login_field" placeholder="Email" class="field"><br>
+        <input type="text" id="email_login_field" name="Email" placeholder="Email" class="field"><br>
+
         <label for="passwordLoginField">Password: </label><br>
-        <input type="password" id="password_login_field" name="password_login_field" placeholder="Password" class="field"><br><br>
+        <input type="password" id="password_login_field" name="Password" placeholder="Password" class="field"><br><br>
+
         <input type="submit" value="Submit" class="button">
         <a class="button" href="/auth/resetpassword">Forgot password?</a>
     </form>
 </div>
+
+@if (Model != null)
+{
+    // Create the validation error view model
+    ValidationErrorViewModel validationErrorViewModel = new ValidationErrorViewModel
+    {
+        ListOfErrors = Model.LoginValidationErrors
+    };
+
+    // Append the Partial view
+    @await Html.PartialAsync("~/Views/Error/_SideValidationErrorShowPartial.cshtml", validationErrorViewModel);
+}

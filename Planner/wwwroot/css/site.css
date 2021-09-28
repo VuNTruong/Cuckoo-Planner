@@ -189,4 +189,25 @@ body {
 
 .login-form-area {
     width: 50%;
+    float: left;
+}
+
+.error-show-area {
+    width: 35%;
+    float: left;
+    margin-left: 20px;
+    margin-top: 40px;
+}
+
+.error-form {
+    background-color: #dba4a0;
+    border-color: red;
+    border-style: solid;
+    padding: 10px;
+    border-radius: 10px;
+    border-width: 2px;
+}
+
+.error-message-text {
+    color: #ba544c;
 }

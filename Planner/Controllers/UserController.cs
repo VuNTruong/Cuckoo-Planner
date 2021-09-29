@@ -34,13 +34,13 @@ namespace Planner.Controllers
                 .ToListAsync())[0];
 
             // Initialize view model
-            var UserViewModel = new UserViewModel
+            var accountInfoViewModel = new AccountInfoViewModel
             {
                 Email = currentUserObject.User.Email,
                 FullName = currentUserObject.FullName
             };
 
-            return View(UserViewModel);
+            return View(accountInfoViewModel);
         }
     }
 }

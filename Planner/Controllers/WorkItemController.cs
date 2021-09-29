@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,29 +20,25 @@ namespace Planner.Controllers
     public class WorkItemController : Controller
     {
         // WorkItem object which will be used when performing CRUD operations with work items
-        [BindProperty]
-        [FromBody]
-        public WorkItem WorkItem { get; set; }
+        //[BindProperty]
+        //[FromBody]
+        //public WorkItem WorkItem { get; set; }
 
         // Current user utils (this wil be used to get user id of the currently logged in user)
         private readonly CurrentUserUtils currentUserUtils;
-
-        // List of work item view models
-        private List<WorkItemViewModel> listOfWorkItemViewModels;
 
         // Constructor
         public WorkItemController(IHttpContextAccessor httpContextAccessor)
         {
             // Initialize current user utils
             currentUserUtils = new CurrentUserUtils(httpContextAccessor);
-
-            // Initialize work item view model
-            listOfWorkItemViewModels = new List<WorkItemViewModel>();
         }
 
         [HttpGet("")]
         public async Task<IActionResult> WorkItemOverview()
         {
+            List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
+
             ViewData["Header"] = "Hello there!";
 
             // Database context
@@ -51,12 +48,9 @@ namespace Planner.Controllers
             int currentUserId = await currentUserUtils.GetCurrentUserId();
 
             // Reference the database to get work items created by the currently logged in user
-            List<WorkItem> listOfWorkItems = await databaseContext.WorkItems.Where((workItem) =>
+             List<WorkItem> listOfWorkItems = await databaseContext.WorkItems.Where((workItem) =>
                 workItem.CreatorId == currentUserId
             ).ToListAsync();
-
-            // List of work item view models
-            //List<WorkItemViewModel> workItemViewModels = new List<WorkItemViewModel>();
 
             // Loop through list of obtained work items and create work item
             // view model out of them
@@ -66,7 +60,8 @@ namespace Planner.Controllers
                 {
                     Title = workItem.Title,
                     Content = workItem.Content,
-                    Id = workItem.Id
+                    Id = workItem.Id,
+                    DateCreated = workItem.DateCreated
                 };
 
                 // Add the newly created work item view model into the list
@@ -80,47 +75,70 @@ namespace Planner.Controllers
             };
 
             // Return the view with updated view model
-            return View(workItemListViewModel);
+            return View("WorkItemOverview", workItemListViewModel);
         }
 
         [HttpPost("addMoreWorkItem")]
-        public async Task<IActionResult> WorkItemAddMore()
+        public async Task<IActionResult> WorkItemAddMore(WorkItemViewModel workItemViewModel)
         {
+            // List of work item view models
+            List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
+
+            // This object is used to get current day
+            string currentDate = DateTime.UtcNow.ToString("MM - dd - yyyy");
+
             // Database context
             var databaseContext = new DatabaseContext();
 
             // Call the function to get info of the currently logged in user
             int currentUserId = await currentUserUtils.GetCurrentUserId();
 
-            // Update user id of the work item creator
-            WorkItem.CreatorId = currentUserId;
+            // Work item object to be added to the database
+            WorkItem newWorkItem = new WorkItem
+            {
+                Title = workItemViewModel.Title,
+                Content = workItemViewModel.Content,
+                DateCreated = currentDate,
+                CreatorId = currentUserId
+            };
 
             // Start querying the database
             await databaseContext.WorkItems
-                .AddAsync(WorkItem);
+                .AddAsync(newWorkItem);
 
             // Save changes
             await databaseContext.SaveChangesAsync();
 
-            // Create new view model out of the new work item
-            WorkItemViewModel newWorkItemViewModel = new WorkItemViewModel
+            // Reference the database to get work items created by the currently logged in user
+            List<WorkItem> listOfWorkItems = await databaseContext.WorkItems.Where((workItem) =>
+                workItem.CreatorId == currentUserId
+            ).ToListAsync();
+
+            // Loop through list of obtained work items and create work item
+            // view model out of them
+            foreach (var workItem in listOfWorkItems)
             {
-                Title = WorkItem.Title,
-                Content = WorkItem.Content,
-                Id = WorkItem.Id
-            };
+                WorkItemViewModel newWorkItemViewModel = new WorkItemViewModel
+                {
+                    Title = workItem.Title,
+                    Content = workItem.Content,
+                    Id = workItem.Id,
+                    DateCreated = workItem.DateCreated
+                };
 
-            // Add the newly created work item view model into the list
-            listOfWorkItemViewModels.Add(newWorkItemViewModel);
+                // Add the newly created work item view model into the list
+                listOfWorkItemViewModels.Add(newWorkItemViewModel);
+            }
 
-            // Create the new work item list view model
+            // Initialize view model
             var workItemListViewModel = new WorkItemListViewModel
             {
                 WorkItems = listOfWorkItemViewModels
             };
 
             // Return the view with updated view model
-            return View(workItemListViewModel);
+            ViewData["Header"] = "Hello there!";
+            return View("WorkItemOverview", workItemListViewModel);
         }
     }
 }

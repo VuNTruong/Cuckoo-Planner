@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Planner.ViewModels
 {
-    public class UserViewModel
+    public class AccountInfoViewModel
     {
         // Full name of the currently logged in user
         public string FullName { get; set; }

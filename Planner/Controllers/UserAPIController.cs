@@ -9,6 +9,7 @@ using Planner.Models;
 using System.IO;
 using Planner.Utils;
 using Microsoft.AspNetCore.Http;
+using Planner.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -91,7 +92,7 @@ namespace Planner.Controllers
 
         // The function to change password for the currently logged in user
         [HttpPatch("changePassword")]
-        public async Task<JsonResult> ChangePassword()
+        public async Task<JsonResult> ChangePassword([FromBody] ChangePasswordViewModel changePasswordViewModel)
         {
             // Read request body
             var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
@@ -106,7 +107,7 @@ namespace Planner.Controllers
             User currentUserObject = await currentUserUtils.GetCurrentUserObject();
 
             // Start with password changing here
-            var result = await userManager.ChangePasswordAsync(currentUserObject, requestBody["currentPassword"], requestBody["newPassword"]);
+            var result = await userManager.ChangePasswordAsync(currentUserObject, changePasswordViewModel.CurrentPassword, changePasswordViewModel.NewPassword);
 
             // Check to see if result of the password change is successful or not
             if (result.Succeeded)
@@ -129,13 +130,13 @@ namespace Planner.Controllers
 
         // The function to change email for the currently logged in user
         [HttpPatch("changeEmail")]
-        public async Task<JsonResult> ChangeEmail()
+        public async Task<JsonResult> ChangeEmail([FromBody] ChangeEmailViewModel changeEmailViewModel)
         {
-            // Read request body
-            var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
+            //// Read request body
+            //var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
 
-            // Convert JSON object into accessible object (Dict)
-            var requestBody = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
+            //// Convert JSON object into accessible object (Dict)
+            //var requestBody = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
 
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
@@ -144,8 +145,8 @@ namespace Planner.Controllers
             User currentUserObject = await currentUserUtils.GetCurrentUserObject();
 
             // Change username and email
-            currentUserObject.Email = requestBody["newEmail"];
-            currentUserObject.UserName = requestBody["newEmail"];
+            currentUserObject.Email = changeEmailViewModel.NewEmail;
+            currentUserObject.UserName = changeEmailViewModel.NewEmail;
 
             // Update the changes
             await userManager.UpdateAsync(currentUserObject);

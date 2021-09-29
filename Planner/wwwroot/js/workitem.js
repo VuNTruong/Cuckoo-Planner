@@ -4,7 +4,7 @@ function openUpdateTaskMenu(item_id_to_update) {
     $('.update-task-area').append(`
         <div class="update-backdrop" id="update-backdrop" onclick="closeUpdateTaskMenu()"></div>
         <div class="update-menu" id="update-menu">
-            <form class="update-form" onsubmit="onUpdate(${item_id_to_update})">
+            <form class="update-form" action="OpenUpdateTaskMenu">
                 <h2>
                     Update task
                 </h2>
@@ -18,6 +18,17 @@ function openUpdateTaskMenu(item_id_to_update) {
             </form>
         </div>
     `);
+}
+
+// The function to show work item entry alert
+function workItemEntryAlertShow() {
+    // Append work item entry alert into the view
+    $('.update-task-area').append(`
+        <div class="update-backdrop" id="update-backdrop" onclick="closeUpdateTaskMenu()"></div>
+        <div class="update-menu" id="update-menu">
+            <p>Please check that you've filled out both fields</p>
+        </div>
+    `)
 }
 
 // The function to close the update task menu
@@ -89,6 +100,12 @@ function onAdd() {
                     </div>
                 </div>
             `)
+        },
+        error: function (responseData) {
+            console.log("There seem to be an error");
+
+            // Call the function to show the alert
+            workItemEntryAlertShow();
         }
     })
 }
@@ -108,8 +125,8 @@ function onUpdate(work_item_id) {
         dataType: "json",
         cache: false,
         data: JSON.stringify({
-            "title": newTitle,
-            "content": newContent
+            "Title": newTitle,
+            "Content": newContent
         }),
         contentType: "application/json",
         success: function (responseData) {

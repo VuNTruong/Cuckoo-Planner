@@ -30,6 +30,9 @@ namespace Planner.Controllers
         // Validation error getter
         private ValidationErrorGetter validationErrorGetter;
 
+        // Identity error getter
+        private IdentityErrorGetter identityErrorGetter;
+
         // Constructor
         public AuthController(UserManager<User> userManager,
             SignInManager<User> signInManager, IEmailSender emailSender)
@@ -57,12 +60,12 @@ namespace Planner.Controllers
         [HttpPost("SignInAction")]
         public async Task<ActionResult> SignInAction(LoginViewModel loginViewModel)
         {
+            // Initialize list of errors
+            loginViewModel.LoginValidationErrors = new List<string>();
+
             // Perform model validation
             if (!ModelState.IsValid)
             {
-                // Initialize list of errors
-                loginViewModel.LoginValidationErrors = new List<string>();
-
                 // Initialize validation error getter
                 validationErrorGetter = new ValidationErrorGetter
                 {
@@ -73,6 +76,7 @@ namespace Planner.Controllers
                 loginViewModel.LoginValidationErrors = validationErrorGetter.ValidationErrorsGenerator();
 
                 // Return the view
+                ViewData["Header"] = "Welcome back";
                 return View("SignIn", loginViewModel);
             }
 
@@ -86,8 +90,19 @@ namespace Planner.Controllers
             }
             else
             {
+                // Initialize identity error getter
+                identityErrorGetter = new IdentityErrorGetter
+                {
+                    UserManager = userManager,
+                    SignInResult = result
+                };
+
+                // Get errors
+                loginViewModel.LoginValidationErrors = await identityErrorGetter.LoginErrorGenerator(loginViewModel.Email);
+
                 // Return the view
-                return View("SignIn");
+                ViewData["Header"] = "Welcome back";
+                return View("SignIn", loginViewModel);
             }
         }
 
@@ -196,7 +211,7 @@ namespace Planner.Controllers
             var userObject = await databaseContext.Users.Where(userObject =>
                 userObject.Email == resetPasswordViewModel.Email
             ).ToListAsync();
-
+            
             // If there is no account associated with that email, let the user know it
             if (userObject.Count == 0)
             {
@@ -229,10 +244,23 @@ namespace Planner.Controllers
         [HttpPost("CreateNewPasswordAction")]
         public async Task<ActionResult> CreateNewPasswordAction (CreateNewPasswordViewModel createNewPasswordViewModel)
         {
+            // Initialize list of errors
+            createNewPasswordViewModel.ValidationErrors = new List<string>();
+
             // Validate the model
             if (!ModelState.IsValid)
             {
-                return View("createnewpassword");
+                // Initialize validation error getter
+                validationErrorGetter = new ValidationErrorGetter
+                {
+                    ModelState = ViewData.ModelState
+                };
+
+                // Get errors
+                createNewPasswordViewModel.ValidationErrors = validationErrorGetter.ValidationErrorsGenerator();
+
+                ViewData["Header"] = "Create new password;";
+                return View("ResetPassword", createNewPasswordViewModel);
             }
 
             // Reference the database to get user object of the user who needs to reset password
@@ -242,7 +270,7 @@ namespace Planner.Controllers
 
             // Call the function to start resetting password
             IdentityResult passwordResetResult = await userManager.ResetPasswordAsync(userObject, createNewPasswordViewModel.PasswordResetToken, createNewPasswordViewModel.NewPassword);
-
+            
             // Check to see if password reset operation is successful or not
             if (passwordResetResult.Succeeded)
             {

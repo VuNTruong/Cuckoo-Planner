@@ -11,5 +11,8 @@ namespace Planner.ViewModels
 
         // Content of the work item
         public string Content { get; set; }
+
+        // Date created of the work item
+        public string DateCreated { get; set; }
     }
 }

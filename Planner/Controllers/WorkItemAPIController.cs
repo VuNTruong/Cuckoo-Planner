@@ -9,6 +9,7 @@ using Planner.Data;
 using Planner.Models;
 using Planner.Utils;
 using Microsoft.AspNetCore.Http;
+using Planner.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,8 +20,8 @@ namespace Planner.Controllers
     public class WorkItemAPIController : Controller
     {
         // WorkItem object which will be used when performing CRUD operations with work items
-        [BindProperty]
-        [FromBody]
+        //[BindProperty]
+        //[FromBody]
         public WorkItem WorkItem { get; set; }
 
         // Current user utils (this will be used to get user id of the currently logged in user)
@@ -41,7 +42,7 @@ namespace Planner.Controllers
             var databaseContext = new DatabaseContext();
 
             // Start querying the database
-            var WorkItems = await databaseContext.WorkItems
+            var workItems = await databaseContext.WorkItems
                 .Include(workItem => workItem.Creator)
                 .ToListAsync();
 
@@ -51,7 +52,7 @@ namespace Planner.Controllers
             // Add data to the response data
             Response.StatusCode = 200;
             responseData.Add("status", "Done");
-            responseData.Add("data", WorkItems);
+            responseData.Add("data", workItems);
 
             // Return response to the client
             return new JsonResult(responseData);
@@ -86,7 +87,7 @@ namespace Planner.Controllers
 
         // The function to create new work item in the database
         [HttpPost]
-        public async Task<JsonResult> CreateWorkItem()
+        public async Task<JsonResult> CreateWorkItem([FromBody] AddWorkItemViewModel addWorkItemViewModel)
         {
             // The database context
             var databaseContext = new DatabaseContext();
@@ -97,12 +98,18 @@ namespace Planner.Controllers
             // Call the function to get user if of the currently logged in user
             int currentUserId = await currentUserUtils.GetCurrentUserId();
 
-            // Update user id of the work item creator
-            WorkItem.CreatorId = currentUserId;
+            // Create the new work item object
+            WorkItem newWorkItemObject = new WorkItem
+            {
+                Content = addWorkItemViewModel.Content,
+                Title = addWorkItemViewModel.Title,
+                CreatorId = currentUserId,
+                DateCreated = addWorkItemViewModel.DateCreated
+            };
 
             // Start querying the database
             await databaseContext.WorkItems
-                .AddAsync(WorkItem);
+                .AddAsync(newWorkItemObject);
 
             // Save changes
             await databaseContext.SaveChangesAsync();
@@ -110,7 +117,7 @@ namespace Planner.Controllers
             // Add data to the response data
             Response.StatusCode = 201;
             responseData.Add("status", "Done");
-            responseData.Add("data", WorkItem);
+            responseData.Add("data", newWorkItemObject);
 
             // Return response to the client
             return new JsonResult(responseData);
@@ -148,7 +155,7 @@ namespace Planner.Controllers
 
         // The function to update a work item in the database
         [HttpPatch]
-        public async Task<JsonResult> UpdateWorkItem()
+        public async Task<JsonResult> UpdateWorkItem([FromBody] UpdateWorkItemViewModel updateWorkItemViewModel)
         {
             // Get id of work item to be updated
             int workItemIdToBeUpdated = int.Parse(Request.Query["workItemId"]);
@@ -161,8 +168,8 @@ namespace Planner.Controllers
                 .Single((workItem) => workItem.Id == workItemIdToBeUpdated);
 
             // Update the work item
-            workItemToBeUpdated.Content = WorkItem.Content;
-            workItemToBeUpdated.Title = WorkItem.Title;
+            workItemToBeUpdated.Content = updateWorkItemViewModel.Content;
+            workItemToBeUpdated.Title = updateWorkItemViewModel.Title;
 
             // Update changes in the database
             await databaseContext.SaveChangesAsync();

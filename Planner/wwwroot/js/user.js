@@ -75,9 +75,9 @@ function onUpdatePassword() {
         dataType: "json",
         cache: false,
         data: JSON.stringify({
-            "currentPassword": oldPassword,
-            "newPassword": newPassword,
-            "newPasswordConfirm": newPasswordConfirm
+            "CurrentPassword": oldPassword,
+            "NewPassword": newPassword,
+            "NewPasswordConfirm": newPasswordConfirm
         }),
         success: function (responseData) {
             // Call the function to dismiss the menu
@@ -99,7 +99,7 @@ function onUpdateEmail() {
         url: "https://localhost:5001/api/v1/user/changeEmail",
         type: "PATCH",
         dataType: JSON.stringify({
-            "newEmail": newEmail
+            "NewEmail": newEmail
         }),
         success: function (responseData) {
             // Call the function to dismiss the menu

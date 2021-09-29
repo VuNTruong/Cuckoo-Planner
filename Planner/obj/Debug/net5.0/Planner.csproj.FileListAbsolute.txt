@@ -363,3 +363,4 @@
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/ref/Planner.dll
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Planner.pdb
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Planner.genruntimeconfig.cache
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Planner.csproj.AssemblyReference.cache

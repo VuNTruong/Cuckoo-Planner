@@ -19,13 +19,7 @@ namespace Planner.Controllers
     [Route("api/v1/Auth")]
     [ApiController]
     public class AuthAPIController : Controller
-    {
-        //[BindProperty]
-        public SignUpViewModel SignUpViewModel { get; set; }
-
-        // Login ViewModel which will be used for login operation
-        public LoginViewModel LoginViewModel { get; set; }
-        
+    {   
         // User manager and sign in manager
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
@@ -52,12 +46,10 @@ namespace Planner.Controllers
 
         // The function to create new user in the database
         [HttpPost("signUp")]
-        public async Task<JsonResult> CreateUser()
+        public async Task<JsonResult> CreateUser([FromBody] SignUpViewModel signUpViewModel)
         {
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
-
-            var viewModel = SignUpViewModel;
 
             if (ModelState.IsValid)
             {
@@ -69,28 +61,11 @@ namespace Planner.Controllers
                 // Return response to the client
                 return new JsonResult(responseData);
             }
-            //// Use this to read request body
-            //var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
-
-            //// Convert JSON object into accessible object
-            //var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
-
-            //// Check to see if user verified password correctly or not
-            //if (SignUpViewModel.Password != SignUpViewModel.PasswordConfirm)
-            //{
-            //    // Add data to the response data
-            //    Response.StatusCode = 400;
-            //    responseData.Add("status", "Not done");
-            //    responseData.Add("data", "Password and password confirm do not match");
-
-            //    // Return response to the client
-            //    return new JsonResult(responseData);
-            //}
-
+            
             // Create the new user profile object
             var newUserProfileObject = new UserProfile
             {
-                FullName = SignUpViewModel.FullName
+                FullName = signUpViewModel.FullName
             };
 
             // Add new user profile object to the table
@@ -107,12 +82,12 @@ namespace Planner.Controllers
             var newUser = new User
             {
                 UserProfileId = createdUserProfileId,
-                Email = SignUpViewModel.Email,
-                UserName = SignUpViewModel.Email
+                Email = signUpViewModel.Email,
+                UserName = signUpViewModel.Email
             };
 
             // Perform the sign up operation and get the result
-            var result = await userManager.CreateAsync(newUser, SignUpViewModel.Password);
+            var result = await userManager.CreateAsync(newUser, signUpViewModel.Password);
 
             if (result.Succeeded)
             {
@@ -135,10 +110,16 @@ namespace Planner.Controllers
 
         // The function to sign a user in
         [HttpPost("signIn")]
-        public async Task<JsonResult> SignIn()
+        public async Task<JsonResult> SignIn([FromBody] LoginViewModel loginViewModel)
         {
+            //// Use this to read request body
+            //var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
+
+            //// Convert JSON object into accessible object
+            //var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
+
             // Perform the sign in operation and get the result
-            var result = await signInManager.PasswordSignInAsync(LoginViewModel.Email, LoginViewModel.Password, true, false);
+            var result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, true, false);
 
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();

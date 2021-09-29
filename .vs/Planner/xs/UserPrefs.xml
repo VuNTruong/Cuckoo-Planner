@@ -1,11 +1,16 @@
 ﻿<Properties StartupConfiguration="{85FE47FF-8155-4DBB-9DA2-01A836D75303}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Views/Error/_SideValidationErrorShowPartial.cshtml">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/wwwroot/js/user.js">
     <Files>
-      <File FileName="Planner/ViewModels/CreateNewPasswordViewModel.cs" Line="29" Column="2" />
-      <File FileName="Planner/Controllers/AuthController.cs" Line="175" Column="14" />
-      <File FileName="Planner/Views/Auth/SignUp.cshtml" Line="34" Column="13" />
-      <File FileName="Planner/Views/Auth/SignIn.cshtml" Line="26" Column="26" />
-      <File FileName="Planner/Views/Error/_SideValidationErrorShowPartial.cshtml" Line="9" Column="14" />
+      <File FileName="Planner/Utils/ValidationErrorGetter.cs" />
+      <File FileName="Planner/ViewModels/UpdateWorkItemViewModel.cs" />
+      <File FileName="Planner/Controllers/WorkItemAPIController.cs" />
+      <File FileName="Planner/ViewModels/AccountInfoViewModel.cs" Line="13" Column="1" NotebookId="1" />
+      <File FileName="Planner/Controllers/UserAPIController.cs" Line="65" Column="37" NotebookId="1" />
+      <File FileName="Planner/wwwroot/js/auth.js" Line="1" Column="1" NotebookId="1" />
+      <File FileName="Planner/ViewModels/ChangePasswordViewModel.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="Planner/ViewModels/AddWorkItemViewModel.cs" Line="5" Column="2" NotebookId="2" />
+      <File FileName="Planner/ViewModels/SignUpViewModel.cs" Line="17" Column="42" NotebookId="2" />
+      <File FileName="Planner/wwwroot/js/user.js" Line="78" Column="24" NotebookId="2" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -19,15 +24,16 @@
               <Node name="ViewModels" expanded="True" />
               <Node name="Views" expanded="True">
                 <Node name="Auth" expanded="True" />
-                <Node name="Error" expanded="True">
-                  <Node name="_SideValidationErrorShowPartial.cshtml" selected="True" />
-                </Node>
+                <Node name="Error" expanded="True" />
                 <Node name="Shared" expanded="True" />
+                <Node name="User" expanded="True" />
                 <Node name="WorkItem" expanded="True" />
               </Node>
               <Node name="wwwroot" expanded="True">
                 <Node name="css" expanded="True" />
-                <Node name="js" expanded="True" />
+                <Node name="js" expanded="True">
+                  <Node name="user.js" selected="True" />
+                </Node>
               </Node>
             </Node>
           </Node>
@@ -40,9 +46,7 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthController.cs" relfile="Planner/Controllers/AuthController.cs" line="170" column="1" />
-      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthController.cs" relfile="Planner/Controllers/AuthController.cs" line="171" column="1" />
-      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/Controllers/AuthController.cs" relfile="Planner/Controllers/AuthController.cs" line="174" column="1" />
+      <Breakpoint file="/Users/vntruong/Documents/VS/Planner/ViewModels/SignUpViewModel.cs" relfile="Planner/ViewModels/SignUpViewModel.cs" line="7" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />

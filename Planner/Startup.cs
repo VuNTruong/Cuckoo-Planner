@@ -19,6 +19,9 @@ using Microsoft.AspNetCore.Identity;
 using Planner.Mail;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Newtonsoft.Json;
+using Planner.Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Planner
 {
@@ -60,7 +63,9 @@ namespace Planner
                 .AddEntityFrameworkStores<DatabaseContext>()
                 .AddDefaultTokenProviders()
                 .AddUserManager<Microsoft.AspNetCore.Identity.UserManager<User>>()
-                .AddSignInManager<SignInManager<User>>();
+                .AddSignInManager<SignInManager<User>>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<DatabaseContext>();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -79,6 +84,12 @@ namespace Planner
             var mailsettings = Configuration.GetSection("MailSettings");
             services.Configure<MailSettings>(mailsettings);
             services.AddTransient<IEmailSender, SendMailService>();
+
+            // Register Http utils with DI
+            services.AddScoped<IHttpUtils, HttpUtils>();
+
+            // Register Error getter with DI
+            services.AddScoped<IErrorGetter, ErrorGetter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

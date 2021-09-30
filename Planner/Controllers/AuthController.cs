@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Planner.Data;
 using Planner.Models;
+using Planner.Services;
 using Planner.Utils;
 using Planner.ViewModels;
 
@@ -27,15 +28,12 @@ namespace Planner.Controllers
         // Database context
         private readonly DatabaseContext databaseContext;
 
-        // Validation error getter
-        private ValidationErrorGetter validationErrorGetter;
-
-        // Identity error getter
-        private IdentityErrorGetter identityErrorGetter;
+        // Error getter
+        private IErrorGetter _errorGetter;
 
         // Constructor
         public AuthController(UserManager<User> userManager,
-            SignInManager<User> signInManager, IEmailSender emailSender)
+            SignInManager<User> signInManager, IEmailSender emailSender, IErrorGetter errorGetter)
         {
             // Initialize user manager and sign in manager with DI
             this.userManager = userManager;
@@ -46,6 +44,9 @@ namespace Planner.Controllers
 
             // Initialize database context
             databaseContext = new DatabaseContext();
+
+            // Initialize Error getter
+            _errorGetter = errorGetter;
         }
 
         // The function to view login page
@@ -66,14 +67,8 @@ namespace Planner.Controllers
             // Perform model validation
             if (!ModelState.IsValid)
             {
-                // Initialize validation error getter
-                validationErrorGetter = new ValidationErrorGetter
-                {
-                    ModelState = ViewData.ModelState
-                };
-
                 // Get errors
-                loginViewModel.LoginValidationErrors = validationErrorGetter.ValidationErrorsGenerator();
+                loginViewModel.LoginValidationErrors = _errorGetter.ValidationErrorsGenerator(ViewData.ModelState);
 
                 // Return the view
                 ViewData["Header"] = "Welcome back";
@@ -90,15 +85,8 @@ namespace Planner.Controllers
             }
             else
             {
-                // Initialize identity error getter
-                identityErrorGetter = new IdentityErrorGetter
-                {
-                    UserManager = userManager,
-                    SignInResult = result
-                };
-
                 // Get errors
-                loginViewModel.LoginValidationErrors = await identityErrorGetter.LoginErrorGenerator(loginViewModel.Email);
+                loginViewModel.LoginValidationErrors = await _errorGetter.GetLoginError(loginViewModel.Email, result);
 
                 // Return the view
                 ViewData["Header"] = "Welcome back";
@@ -124,14 +112,8 @@ namespace Planner.Controllers
                 // Initialize list of errors
                 signUpViewModel.ValidationErrors = new List<string>();
 
-                // Initialize validation error getter
-                validationErrorGetter = new ValidationErrorGetter
-                {
-                    ModelState = ViewData.ModelState
-                };
-
                 // Get errors
-                signUpViewModel.ValidationErrors = validationErrorGetter.ValidationErrorsGenerator();
+                signUpViewModel.ValidationErrors = _errorGetter.ValidationErrorsGenerator(ViewData.ModelState);
 
                 // Return the view
                 ViewData["Header"] = "Welcome";
@@ -194,14 +176,8 @@ namespace Planner.Controllers
                 // Initialize list of errors
                 resetPasswordViewModel.ValidationErrors = new List<string>();
 
-                // Initialize validation error getter
-                validationErrorGetter = new ValidationErrorGetter
-                {
-                    ModelState = ViewData.ModelState
-                };
-
                 // Get errors
-                resetPasswordViewModel.ValidationErrors = validationErrorGetter.ValidationErrorsGenerator();
+                resetPasswordViewModel.ValidationErrors = _errorGetter.ValidationErrorsGenerator(ViewData.ModelState);
 
                 ViewData["Header"] = "Reset password";
                 return View("ForgotPassword", resetPasswordViewModel);
@@ -250,14 +226,8 @@ namespace Planner.Controllers
             // Validate the model
             if (!ModelState.IsValid)
             {
-                // Initialize validation error getter
-                validationErrorGetter = new ValidationErrorGetter
-                {
-                    ModelState = ViewData.ModelState
-                };
-
                 // Get errors
-                createNewPasswordViewModel.ValidationErrors = validationErrorGetter.ValidationErrorsGenerator();
+                createNewPasswordViewModel.ValidationErrors = _errorGetter.ValidationErrorsGenerator(ViewData.ModelState);
 
                 ViewData["Header"] = "Create new password;";
                 return View("ResetPassword", createNewPasswordViewModel);

@@ -25,6 +25,7 @@
     <None Remove="Views\User\" />
     <None Remove="Utils\" />
     <None Remove="Views\Error\" />
+    <None Remove="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -35,6 +36,7 @@
     <Folder Include="Views\User\" />
     <Folder Include="Utils\" />
     <Folder Include="Views\Error\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.15.0" />

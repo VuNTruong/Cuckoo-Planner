@@ -1,19 +1,14 @@
 ﻿using System;
-using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNetCore.Identity;
 
 namespace Planner.Models
 {
     public class Role : IdentityRole
     {
-        public string Description { get; set; }
+        // Role description id which will be used to link this with RoleDescription table
+        public int RoleDetailId { get; set; }
 
-        public Role()
-        {
-        }
-
-        public Role(string roleName, string description) : base(roleName)
-        {
-            Description = description;
-        }
+        // One Role object will only have one RoleDescription object
+        public RoleDetail RoleDetail { get; set; }
     }
 }

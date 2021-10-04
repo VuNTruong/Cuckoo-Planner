@@ -9,5 +9,8 @@ namespace Planner.ViewModels
         [Required]
         // Name of the new role
         public string NewRoleName { get; set; }
+
+        // Description of the new role
+        public string NewRoleDescription { get; set; }
     }
 }

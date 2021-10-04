@@ -8030,7 +8030,7 @@
       "outputPath": "/Users/vntruong/Documents/VS/Planner/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/vntruong/.config/NuGet/NuGet.Config"
+        "/Users/vntruong/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net5.0"

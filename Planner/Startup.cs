@@ -22,6 +22,9 @@ using Newtonsoft.Json;
 using Planner.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Planner.Authorization;
 
 namespace Planner
 {
@@ -60,12 +63,12 @@ namespace Planner
             // Add Token provider
             // We MUST ADD user manager and sign in manager here
             services.AddIdentity<User, IdentityRole>()
+                //.AddDefaultUI()
                 .AddEntityFrameworkStores<DatabaseContext>()
                 .AddDefaultTokenProviders()
                 .AddUserManager<Microsoft.AspNetCore.Identity.UserManager<User>>()
-                .AddSignInManager<SignInManager<User>>()
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<DatabaseContext>();
+                .AddSignInManager<SignInManager<User>>();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -90,6 +93,22 @@ namespace Planner
 
             // Register Error getter with DI
             services.AddScoped<IErrorGetter, ErrorGetter>();
+
+            services.AddAuthentication();
+            services.AddAuthorization();
+
+            //services.AddAuthorization(options =>
+            //{
+            //    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .Build();
+            //});
+
+            //services.AddScoped<IAuthorizationHandler,
+            //              UserIsOwnerAuthorizationHandler>();
+
+            //services.AddSingleton<IAuthorizationHandler,
+            //              UserAdministratorsAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,9 +129,10 @@ namespace Planner
 
             app.UseRouting();
 
-            app.UseAuthorization();
-
+            // Add authentication and authorization
+            // authentication MUST BE placed before authorization
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -121,9 +141,9 @@ namespace Planner
                     pattern: "{controller=Welcome}/{action=Index}/{id?}");
             });
 
-            CookieAuthenticationOptions options = new CookieAuthenticationOptions();
-            options.AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie;
-            options.LoginPath = new PathString("/account/login");
+            //CookieAuthenticationOptions options = new CookieAuthenticationOptions();
+            //options.AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie;
+            //options.LoginPath = new PathString("/auth/login");
         }
     }
 }

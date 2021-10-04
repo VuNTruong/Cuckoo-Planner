@@ -16,5 +16,8 @@ namespace Planner.Models
 
         // One UserProfile will have many work items
         public virtual List<WorkItem> WorkItems { get; set; }
+
+        // Create many to many relationship with Role
+        public List<RoleDetailUserProfile> RoleDetailUserProfiles { get; set; }
     }
 }

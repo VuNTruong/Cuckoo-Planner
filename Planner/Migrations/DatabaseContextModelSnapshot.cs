@@ -28,6 +28,10 @@ namespace Planner.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -44,6 +48,8 @@ namespace Planner.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Roles");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityRole");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -150,6 +156,43 @@ namespace Planner.Migrations
                     b.ToTable("UserTokens");
                 });
 
+            modelBuilder.Entity("Planner.Models.RoleDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("RoleDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("roledetail");
+                });
+
+            modelBuilder.Entity("Planner.Models.RoleDetailUserProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("RoleDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleDetailId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("roledetailuserprofile");
+                });
+
             modelBuilder.Entity("Planner.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -244,6 +287,7 @@ namespace Planner.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CreatorId")
@@ -256,6 +300,7 @@ namespace Planner.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -263,6 +308,20 @@ namespace Planner.Migrations
                     b.HasIndex("CreatorId");
 
                     b.ToTable("workitems");
+                });
+
+            modelBuilder.Entity("Planner.Models.Role", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
+
+                    b.Property<int>("RoleDetailId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("RoleDetailId")
+                        .IsUnique()
+                        .HasFilter("[RoleDetailId] IS NOT NULL");
+
+                    b.HasDiscriminator().HasValue("Role");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -316,6 +375,25 @@ namespace Planner.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Planner.Models.RoleDetailUserProfile", b =>
+                {
+                    b.HasOne("Planner.Models.RoleDetail", "RoleDetail")
+                        .WithMany("RoleUsers")
+                        .HasForeignKey("RoleDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Planner.Models.UserProfile", "UserProfile")
+                        .WithMany("RoleUsers")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RoleDetail");
+
+                    b.Navigation("UserProfile");
+                });
+
             modelBuilder.Entity("Planner.Models.User", b =>
                 {
                     b.HasOne("Planner.Models.UserProfile", "UserProfile")
@@ -338,8 +416,28 @@ namespace Planner.Migrations
                     b.Navigation("Creator");
                 });
 
+            modelBuilder.Entity("Planner.Models.Role", b =>
+                {
+                    b.HasOne("Planner.Models.RoleDetail", "RoleDetail")
+                        .WithOne("Role")
+                        .HasForeignKey("Planner.Models.Role", "RoleDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RoleDetail");
+                });
+
+            modelBuilder.Entity("Planner.Models.RoleDetail", b =>
+                {
+                    b.Navigation("Role");
+
+                    b.Navigation("RoleUsers");
+                });
+
             modelBuilder.Entity("Planner.Models.UserProfile", b =>
                 {
+                    b.Navigation("RoleUsers");
+
                     b.Navigation("User");
 
                     b.Navigation("WorkItems");

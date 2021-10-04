@@ -3,25 +3,42 @@
 
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
+@inject RoleManager<IdentityRole> RoleManager
 
 <script src="~/js/auth.js"></script>
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a id="manage" class="nav-link text-dark" href="/user/accountInfo" title="Manage">Hello</a>
-    </li>
-    <li class="nav-item">
-        <button id="logout" type="submit" class="nav-link btn btn-link text-dark" onclick="signOut(event)">Logout</button>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="register" href="/auth/signup">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="login" href="/auth/login">Login</a>
-    </li>
+@{
+    // Get user object of the currently logged in user based on email
+    if (User.IsInRole("Admin"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="register" href="/role">Roles manager</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="login" href="">Roles assignment</a>
+        </li>
+    }
+
+    if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a id="manage" class="nav-link text-dark" href="/user/accountInfo" title="Manage">Hello</a>
+        </li>
+
+        <li class="nav-item">
+            <button id="logout" type="submit" class="nav-link btn btn-link text-dark" onclick="signOut(event)">Logout</button>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="register" href="/auth/signup">Register</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="login" href="/auth/login">Login</a>
+        </li>
+    }
 }
 </ul>

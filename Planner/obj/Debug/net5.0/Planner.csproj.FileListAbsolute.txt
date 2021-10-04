@@ -336,6 +336,12 @@
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Planner.TagHelpers.input.cache
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Planner.TagHelpers.output.cache
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Planner.RazorCoreGenerate.cache
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Areas/Identity/Pages/Account/Login.cshtml.g.cs
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Areas/Identity/Pages/Account/_ViewImports.cshtml.g.cs
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Areas/Identity/Pages/_ValidationScriptsPartial.cshtml.g.cs
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Areas/Identity/Pages/_ViewImports.cshtml.g.cs
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Areas/Identity/Pages/_ViewStart.cshtml.g.cs
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Account/Login.cshtml.g.cs
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Auth/ForgotPassword.cshtml.g.cs
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Auth/ResetPassword.cshtml.g.cs
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Auth/ResetPasswordDone.cshtml.g.cs
@@ -363,3 +369,9 @@
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/ref/Planner.dll
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Planner.pdb
 /Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Planner.genruntimeconfig.cache
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Role/RoleOverview.cshtml.g.cs
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Role/_RoleOverviewItem.cshtml.g.cs
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Account/AccessDenied.cshtml.g.cs
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Role/RoleAssignment.cshtml.g.cs
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Razor/Views/Role/_RoleAssignmentItem.cshtml.g.cs
+/Users/vntruong/Documents/VS/Planner/obj/Debug/net5.0/Planner.csproj.AssemblyReference.cache

@@ -1,0 +1,22 @@
+﻿@model Planner.ViewModels.RoleListViewModel;
+@{
+    ViewData["Title"] = "List of roles";
+}
+
+<h2>@ViewData["Header"]</h2>
+
+<div class="add-more-work-area">
+    <p class="text-desc">Add more roles</p>
+    <script></script>
+    <div class="text-enter-area">
+        <textarea placeholder="Name" class="text-field" id="role_name_text_field"></textarea>
+    </div>
+    <button class="button">Add</button>
+</div>
+
+<div class="list-of-work-item">
+    @foreach (var role in Model.ListOfRolesViewModels)
+    {
+        @await Html.PartialAsync("_RoleOverviewItem", role);
+    }
+</div>

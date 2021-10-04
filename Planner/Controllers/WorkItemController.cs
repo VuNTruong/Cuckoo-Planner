@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ using Planner.ViewModels;
 namespace Planner.Controllers
 {
     [Route("main")]
+    [Authorize]
     public class WorkItemController : Controller
     {
         // WorkItem object which will be used when performing CRUD operations with work items

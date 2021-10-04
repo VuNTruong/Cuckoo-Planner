@@ -1,0 +1,23 @@
+﻿@model Planner.ViewModels.RoleAssignmentListViewModel
+@{
+    ViewData["Title"] = "Role assignments";
+}
+
+<h2>@ViewData["Header"]</h2>
+
+<div class="add-more-work-area">
+    <p class="text-desc">Add role</p>
+    <script></script>
+    <div class="text-enter-area">
+        <textarea placeholder="User" class="text-field" id="user_text_field"></textarea>
+        <textarea placeholder="Role" class="text-field" id="role_text_field"></textarea>
+    </div>
+    <button class="button" id="add_more_role_assignment_button">Add</button>
+</div>
+
+<div class="list-of-work-item">
+    @foreach (var roleAssignment in Model.RoleAssignments)
+    {
+        @await Html.PartialAsync("_RoleAssignmentItem", roleAssignment);
+    }
+</div>

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -37,7 +36,7 @@ namespace Planner.Controllers
         }
 
         // The function to create new role
-        [HttpGet("createNewRole")]
+        [HttpPost("createNewRole")]
         public async Task<JsonResult> CreateNewRole ([FromBody] CreateRoleViewModel createRoleViewModel)
         {
             // Response data for the client
@@ -85,7 +84,7 @@ namespace Planner.Controllers
                 {
                     // Add data to the response data
                     responseBodyKeys = new List<string> { "status", "data" };
-                    responseBodyData = new List<object> { "Done", "Role is created" };
+                    responseBodyData = new List<object> { "Done. Role is created", newRole };
 
                     return _httpUtils.GetResponseData(200, responseBodyKeys, responseBodyData, Response);
                 } else
@@ -107,7 +106,7 @@ namespace Planner.Controllers
         }
 
         // The function to add role to a user with specified user id
-        [HttpGet("addRoleToAUser")]
+        [HttpPost("addRoleToAUser")]
         public async Task<JsonResult> AddRoleToUser ([FromBody] AddRoleToUserViewModel addRoleToUserViewModel)
         {
             // Response data for the client
@@ -141,8 +140,8 @@ namespace Planner.Controllers
             if (result.Succeeded)
             {
                 // Add data to the response data
-                responseBodyKeys = new List<string> { "status", "data" };
-                responseBodyData = new List<object> { "Done", "Role is assigned" };
+                responseBodyKeys = new List<string> { "status", "user", "role" };
+                responseBodyData = new List<object> { "Done. Role is assigned", userObject, roleObject };
 
                 return _httpUtils.GetResponseData(200, responseBodyKeys, responseBodyData, Response);
             }
@@ -178,6 +177,58 @@ namespace Planner.Controllers
             // Add data to the response data
             responseBodyKeys = new List<string> { "status", "data" };
             responseBodyData = new List<object> { "Done", data };
+
+            return _httpUtils.GetResponseData(200, responseBodyKeys, responseBodyData, Response);
+        }
+
+        // The function to remove a role
+        // After calling this function, user assigned to a role which is going to be removed
+        // will lose that role as well
+        [HttpDelete("deleteRole")]
+        public async Task<JsonResult> DeleteRole ([FromBody] DeleteRoleViewModel deleteRoleViewModel)
+        {
+            // Response data for the client
+            List<string> responseBodyKeys;
+            List<object> responseBodyData;
+
+            // Database context
+            DatabaseContext databaseContext = new DatabaseContext();
+
+            // Reference the database to get role detail user profile entity that contains role which going to be removed
+            var roleDetailUserProfileData = (await databaseContext.RoleDetailUserProfiles
+                .Where(roleDetailUserProfile => roleDetailUserProfile.RoleDetail.Id == deleteRoleViewModel.RoleDetailId)
+                .Include(roleDetailUserProfile => roleDetailUserProfile.RoleDetail).ThenInclude(roleDetail => roleDetail.Role)
+                .Include(roleDetailUserProfile => roleDetailUserProfile.UserProfile).ThenInclude(userProfile => userProfile.User)
+                .ToListAsync())[0];
+
+            // Reference the database to get user role entity that containd role which is going to be removed
+            var userRoleData = (await databaseContext.UserRoles
+                .Where(userRole => userRole.RoleId == roleDetailUserProfileData.RoleDetail.Role.Id)
+                .Where(userRole => userRole.UserId == roleDetailUserProfileData.UserProfile.User.Id)
+                .ToListAsync())[0];
+
+            // Reference the database to get role detail entity that is associated with the role which is going to be removed
+            // this includes role object which is going to be removed
+            var roleDetailData = (await databaseContext.RoleDetails
+                .Where(roleDetail => roleDetail.Id == deleteRoleViewModel.RoleDetailId)
+                .Include(roleDetail => roleDetail.Role)
+                .ToListAsync())[0];
+
+            // Remove the user role
+            databaseContext.Remove(userRoleData);
+
+            // Remove the role detail object which will remove role object as well
+            databaseContext.Remove(roleDetailData);
+
+            // Remove the role detail user profile data
+            databaseContext.Remove(roleDetailUserProfileData);
+
+            // Apply changes to the database
+            await databaseContext.SaveChangesAsync();
+
+            // Add data to the response data
+            responseBodyKeys = new List<string> { "status", "data" };
+            responseBodyData = new List<object> { "Done", "Role is removed" };
 
             return _httpUtils.GetResponseData(200, responseBodyKeys, responseBodyData, Response);
         }

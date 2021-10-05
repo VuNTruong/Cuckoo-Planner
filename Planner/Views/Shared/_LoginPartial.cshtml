@@ -12,12 +12,23 @@
     if (User.IsInRole("Admin"))
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" id="register" href="/role">Roles manager</a>
+            <a class="nav-link text-dark" id="role_manager" href="/role">Roles manager</a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link text-dark" id="login" href="">Roles assignment</a>
+            <a class="nav-link text-dark" id="role_assignment" href="/role/roleAssignment">Roles assignment</a>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="work_item_manager" href="/main/GetAllWorkItems">Work items manager</a>
+        </li>
+    }
+
+    if (User.IsInRole("Manager"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="work_item_manager" href="/main/GetAllWorkItems">Work items manager</a>
+        </li>  
     }
 
     if (SignInManager.IsSignedIn(User))

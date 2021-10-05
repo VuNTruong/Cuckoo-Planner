@@ -21,15 +21,16 @@ namespace Planner.Controllers
         // Error getter
         private IErrorGetter _errorGetter;
 
-        private readonly UserManager<User> userManager;
+        // Sign in manager
+        private readonly SignInManager<User> _signInManager;
 
-        public AccountController (IErrorGetter errorGetter, UserManager<User> userManager)
+        public AccountController (IErrorGetter errorGetter, SignInManager<User> signInManager)
         {
             // Initialize Error getter
             _errorGetter = errorGetter;
 
-            //this.signInManager = signInManager;
-            this.userManager = userManager;
+            // Initialize sign in manager
+            _signInManager = signInManager;
         }
 
         // GET: /<controller>/
@@ -61,19 +62,14 @@ namespace Planner.Controllers
                 return View("SignIn", loginViewModel);
             }
 
-            var user = await userManager.FindByEmailAsync(loginViewModel.Email);
+            // Perform the sign in operation and get the result
+            var result = await _signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, true, false);
 
-            if (user != null && await userManager.CheckPasswordAsync(user, loginViewModel.Password))
+            if (result.Succeeded)
             {
-                var identity = new ClaimsIdentity(IdentityConstants.ApplicationScheme);
-                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
-                identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
-
-                await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme,
-                    new ClaimsPrincipal(identity));
-                return RedirectToLocal(returnUrl);
-            }
-            else
+                // Call the function to and go to the return URL
+                return redirectToLocal(returnUrl);
+            } else
             {
                 // Return the view
                 ViewData["Header"] = "Welcome back";
@@ -81,7 +77,7 @@ namespace Planner.Controllers
             }
         }
 
-        private IActionResult RedirectToLocal(string returnUrl)
+        private IActionResult redirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);

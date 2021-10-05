@@ -14,7 +14,7 @@
         "outputPath": "/Users/vntruong/Documents/VS/Planner/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/vntruong/.nuget/NuGet/NuGet.Config"
+          "/Users/vntruong/.config/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -38,6 +38,10 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.1.1, )"
+            },
             "MailKit": {
               "target": "Package",
               "version": "[2.15.0, )"

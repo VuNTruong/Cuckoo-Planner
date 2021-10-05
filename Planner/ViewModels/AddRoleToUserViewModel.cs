@@ -12,9 +12,5 @@ namespace Planner.ViewModels
         [Required]
         // Role id of the role that will be assigned
         public int RoleId { get; set; }
-
-        [Required]
-        // Name of role that user will be assigned
-        public string RoleName { get; set; }
     }
 }

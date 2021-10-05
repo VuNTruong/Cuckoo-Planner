@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using Planner.Data;
 using Planner.Models;
 using Planner.Utils;
@@ -21,116 +19,44 @@ namespace Planner.Controllers
     [Authorize]
     public class WorkItemController : Controller
     {
-        // WorkItem object which will be used when performing CRUD operations with work items
-        //[BindProperty]
-        //[FromBody]
-        //public WorkItem WorkItem { get; set; }
-
         // Current user utils (this wil be used to get user id of the currently logged in user)
         private readonly CurrentUserUtils currentUserUtils;
 
+        // Auto mapper
+        private readonly IMapper _mapper;
+
         // Constructor
-        public WorkItemController(IHttpContextAccessor httpContextAccessor)
+        public WorkItemController(IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             // Initialize current user utils
             currentUserUtils = new CurrentUserUtils(httpContextAccessor);
+
+            // Initialize auto mapper
+            _mapper = mapper;
         }
 
+        // The function to get work items of the currently logged in user
         [HttpGet("")]
         public async Task<IActionResult> WorkItemOverview()
         {
-            List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
-
             ViewData["Header"] = "Hello there!";
 
-            // Database context
-            var databaseContext = new DatabaseContext();
-
-            // Call the function to get info of the currently logged in user
-            int currentUserId = await currentUserUtils.GetCurrentUserId();
-
-            // Reference the database to get work items created by the currently logged in user
-             List<WorkItem> listOfWorkItems = await databaseContext.WorkItems.Where((workItem) =>
-                workItem.CreatorId == currentUserId
-            ).ToListAsync();
-
-            // Loop through list of obtained work items and create work item
-            // view model out of them
-            foreach (var workItem in listOfWorkItems)
-            {
-                WorkItemViewModel newWorkItemViewModel = new WorkItemViewModel
-                {
-                    Title = workItem.Title,
-                    Content = workItem.Content,
-                    Id = workItem.Id,
-                    DateCreated = workItem.DateCreated
-                };
-
-                // Add the newly created work item view model into the list
-                listOfWorkItemViewModels.Add(newWorkItemViewModel);
-            }
-
-            // Initialize view model
-            var workItemListViewModel = new WorkItemListViewModel
-            {
-                WorkItems = listOfWorkItemViewModels
-            };
-
-            // Return the view with updated view model
-            return View("WorkItemOverview", workItemListViewModel);
-        }
-
-        [HttpPost("addMoreWorkItem")]
-        public async Task<IActionResult> WorkItemAddMore(WorkItemViewModel workItemViewModel)
-        {
             // List of work item view models
             List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
 
-            // This object is used to get current day
-            string currentDate = DateTime.UtcNow.ToString("MM - dd - yyyy");
-
             // Database context
             var databaseContext = new DatabaseContext();
 
             // Call the function to get info of the currently logged in user
             int currentUserId = await currentUserUtils.GetCurrentUserId();
-
-            // Work item object to be added to the database
-            WorkItem newWorkItem = new WorkItem
-            {
-                Title = workItemViewModel.Title,
-                Content = workItemViewModel.Content,
-                DateCreated = currentDate,
-                CreatorId = currentUserId
-            };
-
-            // Start querying the database
-            await databaseContext.WorkItems
-                .AddAsync(newWorkItem);
-
-            // Save changes
-            await databaseContext.SaveChangesAsync();
 
             // Reference the database to get work items created by the currently logged in user
             List<WorkItem> listOfWorkItems = await databaseContext.WorkItems.Where((workItem) =>
                 workItem.CreatorId == currentUserId
             ).ToListAsync();
 
-            // Loop through list of obtained work items and create work item
-            // view model out of them
-            foreach (var workItem in listOfWorkItems)
-            {
-                WorkItemViewModel newWorkItemViewModel = new WorkItemViewModel
-                {
-                    Title = workItem.Title,
-                    Content = workItem.Content,
-                    Id = workItem.Id,
-                    DateCreated = workItem.DateCreated
-                };
-
-                // Add the newly created work item view model into the list
-                listOfWorkItemViewModels.Add(newWorkItemViewModel);
-            }
+            // Map list of work item models into list of work item view models
+            listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(listOfWorkItems);
 
             // Initialize view model
             var workItemListViewModel = new WorkItemListViewModel
@@ -139,8 +65,36 @@ namespace Planner.Controllers
             };
 
             // Return the view with updated view model
-            ViewData["Header"] = "Hello there!";
-            return View("WorkItemOverview", workItemListViewModel);
+            return View(workItemListViewModel);
+        }
+
+        // The function to get all work items in the database
+        [Authorize(Roles = "Manager,Admin")]
+        [HttpGet("GetAllWorkItems")]
+        public async Task<IActionResult> WorkItemManager()
+        {
+            ViewData["Header"] = "All work items";
+
+            // List of work item manager view models
+            List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
+
+            // The databasse context
+            DatabaseContext databaseContext = new DatabaseContext();
+
+            // Reference the database to get list of all work items
+            List<WorkItem> listOfWorkItems = await databaseContext.WorkItems
+                .Include(workItem => workItem.Creator).ToListAsync();
+
+            // Map list of work item models into list of work item view models
+            listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(listOfWorkItems);
+
+            var workItemListViewModel = new WorkItemListViewModel
+            {
+                WorkItems = listOfWorkItemViewModels
+            };
+
+            // Return the view with updated view model
+            return View(workItemListViewModel);
         }
     }
 }

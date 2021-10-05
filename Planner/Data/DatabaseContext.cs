@@ -1,7 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Planner.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Planner.Data
@@ -72,11 +70,6 @@ namespace Planner.Data
                 .WithMany(userProfile => userProfile.WorkItems)
                 .HasForeignKey(workItem => workItem.CreatorId);
 
-            modelBuilder.Entity<UserProfile>()
-                .HasMany(userProfile => userProfile.WorkItems)
-                .WithOne(workItem => workItem.Creator)
-                .HasPrincipalKey(userProfile => userProfile.Id);
-
             // Create the relationship between Role and RoleDetail table
             // One RoleDetail object will describe one Role object
             modelBuilder.Entity<RoleDetail>()
@@ -89,12 +82,12 @@ namespace Planner.Data
             modelBuilder.Entity<RoleDetailUserProfile>()
                 .HasOne(roleDetailUserProfile => roleDetailUserProfile.UserProfile)
                 .WithMany(userProfile => userProfile.RoleDetailUserProfiles)
-                .HasForeignKey(roleUser => roleUser.UserProfileId);
+                .HasForeignKey(roleDetailUserProfile => roleDetailUserProfile.UserProfileId);
 
             modelBuilder.Entity<RoleDetailUserProfile>()
                 .HasOne(roleDetailUserProfile => roleDetailUserProfile.RoleDetail)
                 .WithMany(roleDetail => roleDetail.RoleDetailUserProfiles)
-                .HasForeignKey(roleUser => roleUser.RoleDetailId);
+                .HasForeignKey(roleDetailUserProfile => roleDetailUserProfile.RoleDetailId);
 
             // Exclude "AspNet" from table names in IdentityDbContext
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

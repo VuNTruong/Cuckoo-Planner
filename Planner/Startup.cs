@@ -1,30 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Planner.Data;
-using Owin;
-using Microsoft.Owin;
 using Planner.Models;
-using Microsoft.Owin.Security.Cookies;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using Planner.Mail;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Newtonsoft.Json;
 using Planner.Services;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Planner.Authorization;
 
 namespace Planner
 {
@@ -63,11 +49,9 @@ namespace Planner
             // Add Token provider
             // We MUST ADD user manager and sign in manager here
             services.AddIdentity<User, IdentityRole>()
-                //.AddDefaultUI()
                 .AddEntityFrameworkStores<DatabaseContext>()
                 .AddDefaultTokenProviders()
-                .AddUserManager<Microsoft.AspNetCore.Identity.UserManager<User>>()
-                .AddRoles<IdentityRole>()
+                .AddUserManager<UserManager<User>>()
                 .AddSignInManager<SignInManager<User>>();
 
             services.Configure<IdentityOptions>(options =>
@@ -97,18 +81,8 @@ namespace Planner
             services.AddAuthentication();
             services.AddAuthorization();
 
-            //services.AddAuthorization(options =>
-            //{
-            //    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .Build();
-            //});
-
-            //services.AddScoped<IAuthorizationHandler,
-            //              UserIsOwnerAuthorizationHandler>();
-
-            //services.AddSingleton<IAuthorizationHandler,
-            //              UserAdministratorsAuthorizationHandler>();
+            services.AddAutoMapper(typeof(Startup));
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -140,10 +114,6 @@ namespace Planner
                     name: "default",
                     pattern: "{controller=Welcome}/{action=Index}/{id?}");
             });
-
-            //CookieAuthenticationOptions options = new CookieAuthenticationOptions();
-            //options.AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie;
-            //options.LoginPath = new PathString("/auth/login");
         }
     }
 }

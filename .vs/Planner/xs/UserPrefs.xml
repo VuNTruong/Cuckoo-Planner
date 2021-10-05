@@ -1,37 +1,20 @@
 ﻿<Properties StartupConfiguration="{85FE47FF-8155-4DBB-9DA2-01A836D75303}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Controllers/RoleAPIController.cs">
-    <Files>
-      <File FileName="Planner/Models/Role.cs" Line="15" Column="1" NotebookId="1" />
-      <File FileName="Planner/Controllers/RoleAPIController.cs" Line="5" Column="1" NotebookId="1" />
-      <File FileName="Planner/Controllers/AuthController.cs" Line="126" Column="49" NotebookId="1" />
-      <File FileName="Planner/Models/RoleDetail.cs" Line="10" Column="1" NotebookId="1" />
-    </Files>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Controllers/WorkItemController.cs">
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Planner" expanded="True">
             <Node name="Planner" expanded="True">
-              <Node name="Areas" expanded="True">
-                <Node name="Identity" expanded="True">
-                  <Node name="Pages" expanded="True" />
-                </Node>
-              </Node>
-              <Node name="Authorization" expanded="True" />
               <Node name="Controllers" expanded="True">
-                <Node name="RoleAPIController.cs" selected="True" />
+                <Node name="WorkItemController.cs" selected="True" />
               </Node>
-              <Node name="Data" expanded="True" />
-              <Node name="Migrations" expanded="True" />
               <Node name="Models" expanded="True" />
-              <Node name="Utils" expanded="True" />
+              <Node name="Profiles" expanded="True" />
               <Node name="ViewModels" expanded="True" />
               <Node name="Views" expanded="True">
-                <Node name="Account" expanded="True" />
-                <Node name="Role" expanded="True" />
-                <Node name="Shared" expanded="True" />
-                <Node name="Welcome" expanded="True" />
                 <Node name="WorkItem" expanded="True" />
               </Node>
+              <Node name="wwwroot" expanded="True" />
             </Node>
           </Node>
         </State>

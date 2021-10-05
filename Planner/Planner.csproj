@@ -27,8 +27,9 @@
     <None Remove="Views\Error\" />
     <None Remove="Services\" />
     <None Remove="Views\Account\" />
-    <None Remove="Authorization\" />
     <None Remove="Views\Role\" />
+    <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
+    <None Remove="Profiles\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -41,8 +42,8 @@
     <Folder Include="Views\Error\" />
     <Folder Include="Services\" />
     <Folder Include="Views\Account\" />
-    <Folder Include="Authorization\" />
     <Folder Include="Views\Role\" />
+    <Folder Include="Profiles\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.15.0" />
@@ -61,5 +62,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.10" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
   </ItemGroup>
 </Project>

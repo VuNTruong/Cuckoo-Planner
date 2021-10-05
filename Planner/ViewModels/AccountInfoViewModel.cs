@@ -1,5 +1,4 @@
-﻿using System;
-namespace Planner.ViewModels
+﻿namespace Planner.ViewModels
 {
     public class AccountInfoViewModel
     {

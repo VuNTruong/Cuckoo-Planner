@@ -1,0 +1,11 @@
+﻿@model Planner.ViewModels.WorkItemViewModel;
+
+<div class="work-item" id="@Model.Id">
+    <p class="title" id="title-@Model.Id">@Model.Title</p>
+    <p class="detail" id="detail-@Model.Id">@Model.Content</p>
+    <p class="detail" id="more-detail-@Model.Id">Creator: @Model.CreatorFullName - Date created: @Model.DateCreated</p>
+
+    <div class="options">
+        <button class="button" id="@Model.Id">Remove</button>
+    </div>
+</div>

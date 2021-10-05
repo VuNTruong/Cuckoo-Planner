@@ -7,12 +7,14 @@ using Microsoft.EntityFrameworkCore;
 using Planner.ViewModels;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Planner.Controllers
 {
     [Route("user")]
+    [Authorize]
     public class UserController : Controller
     {
         // The view where user can see account info

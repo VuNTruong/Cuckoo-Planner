@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,10 +22,16 @@ namespace Planner.Controllers
         // Role manager
         private readonly RoleManager<IdentityRole> _roleManager;
 
+        // Auto mapper
+        private readonly IMapper _mapper;
+
         // Constructor
-        public RoleController(RoleManager<IdentityRole> roleManager)
+        public RoleController(RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _roleManager = roleManager;
+
+            // Initialize mapper
+            _mapper = mapper;
         }
 
         // The function to get all roles in the system
@@ -33,18 +40,8 @@ namespace Planner.Controllers
             // List of role view models
             List<RoleViewModel> listOfRoleViewModels = new List<RoleViewModel>();
 
-            // Read all roles into list of role view model
-            foreach(var roleObject in _roleManager.Roles)
-            {
-                // Create the role view model object out of the role
-                RoleViewModel roleViewModel = new RoleViewModel {
-                    RoleId = roleObject.Id,
-                    RoleName = roleObject.Name
-                };
-
-                // Add the newly created role view model object into the list
-                listOfRoleViewModels.Add(roleViewModel);
-            }
+            // Map list of roles into list of role view models
+            listOfRoleViewModels = _mapper.Map<List<RoleViewModel>>(_roleManager.Roles);
 
             // Create the role list view model
             RoleListViewModel roleListViewModel = new RoleListViewModel
@@ -76,6 +73,7 @@ namespace Planner.Controllers
                 // Create the role assignment view model out of the role assignment
                 RoleAssignmentViewModel roleAssignmentViewModel = new RoleAssignmentViewModel
                 {
+                    Id = roleAssignment.Id,
                     UserFullNameGetAssigned = roleAssignment.UserProfile.FullName,
                     RoleNameAssignedToUser = roleAssignment.RoleDetail.Role.Name
                 };

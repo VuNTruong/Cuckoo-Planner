@@ -7,11 +7,12 @@
 
 <div class="add-more-work-area">
     <p class="text-desc">Add more roles</p>
-    <script></script>
+    <script src="~/js/role.js"></script>
     <div class="text-enter-area">
-        <textarea placeholder="Name" class="text-field" id="role_name_text_field"></textarea>
+        <textarea placeholder="Name" class="text-field" id="new_role_name_text_field"></textarea>
+        <textarea placeholder="Description" class="text-field" id="new_role_description_text_field"></textarea>
     </div>
-    <button class="button">Add</button>
+    <button class="button" onclick="onAddRole()">Add</button>
 </div>
 
 <div class="list-of-work-item">

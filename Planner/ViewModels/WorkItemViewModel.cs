@@ -12,6 +12,9 @@ namespace Planner.ViewModels
         // Content of the work item
         public string Content { get; set; }
 
+        // Full name of the creator
+        public string CreatorFullName { get; set; }
+
         // Date created of the work item
         public string DateCreated { get; set; }
     }

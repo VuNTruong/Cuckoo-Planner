@@ -75,7 +75,7 @@ namespace Planner.Controllers
         {
             ViewData["Header"] = "All work items";
 
-            // List of work item manager view models
+            // List of work item view models
             List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
 
             // The databasse context

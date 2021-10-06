@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using Planner.Data;
 using Planner.Models;
 using Planner.Utils;
 using Microsoft.AspNetCore.Http;
 using Planner.ViewModels;
+using AutoMapper;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,24 +19,31 @@ namespace Planner.Controllers
     public class WorkItemAPIController : Controller
     {
         // WorkItem object which will be used when performing CRUD operations with work items
-        //[BindProperty]
-        //[FromBody]
         public WorkItem WorkItem { get; set; }
 
         // Current user utils (this will be used to get user id of the currently logged in user)
         private readonly CurrentUserUtils currentUserUtils;
 
+        // Auto mapper
+        private IMapper _mapper;
+
         // Constructor
-        public WorkItemAPIController(IHttpContextAccessor httpContextAccessor)
+        public WorkItemAPIController(IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             // Initialize current user utils
             currentUserUtils = new CurrentUserUtils(httpContextAccessor);
+
+            // Initialize auto mapper
+            _mapper = mapper;
         }
 
         // The function to get all work items in the database
         [HttpGet]
         public async Task<JsonResult> GetWorkItems()
         {
+            // List of work item manager view models
+            List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
+
             // Database context
             var databaseContext = new DatabaseContext();
 
@@ -46,13 +52,16 @@ namespace Planner.Controllers
                 .Include(workItem => workItem.Creator)
                 .ToListAsync();
 
+            // Map list of work items into list of work item view models
+            listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
+
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
 
             // Add data to the response data
             Response.StatusCode = 200;
             responseData.Add("status", "Done");
-            responseData.Add("data", workItems);
+            responseData.Add("data", listOfWorkItemViewModels);
 
             // Return response to the client
             return new JsonResult(responseData);
@@ -62,6 +71,9 @@ namespace Planner.Controllers
         [HttpGet("getWorkItemsOfCurrentUser")]
         public async Task<JsonResult> GetWorkItemsOfCurrentUser()
         {
+            // List of work item view models
+            List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
+
             // Database context
             var databaseContext = new DatabaseContext();
 
@@ -72,14 +84,16 @@ namespace Planner.Controllers
             var responseData = new Dictionary<string, object>();
 
             // Reference the database to get work items created by the currently logged in user
-            var listOfWorkItems = await databaseContext.WorkItems.Where((workItem) =>
+            var workItems = await databaseContext.WorkItems.Where((workItem) =>
                 workItem.CreatorId == currentUserId
             ).ToListAsync();
 
+            // Map list of work item models into list of work item view models
+            listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
+
             // Add data to the response data
-            Response.StatusCode = 200;
             responseData.Add("status", "Done");
-            responseData.Add("data", listOfWorkItems);
+            responseData.Add("data", listOfWorkItemViewModels);
 
             // Return response to the client
             return new JsonResult(responseData);
@@ -114,10 +128,12 @@ namespace Planner.Controllers
             // Save changes
             await databaseContext.SaveChangesAsync();
 
+            // Map new work item object into a work item view model
+            WorkItemViewModel workItemViewModel = _mapper.Map<WorkItemViewModel>(newWorkItemObject);
+
             // Add data to the response data
-            Response.StatusCode = 201;
             responseData.Add("status", "Done");
-            responseData.Add("data", newWorkItemObject);
+            responseData.Add("data", workItemViewModel);
 
             // Return response to the client
             return new JsonResult(responseData);
@@ -145,7 +161,6 @@ namespace Planner.Controllers
             var responseData = new Dictionary<string, object>();
 
             // Add data to the response data
-            Response.StatusCode = 200;
             responseData.Add("status", "Done");
             responseData.Add("data", "Task has been deleted");
 
@@ -174,13 +189,15 @@ namespace Planner.Controllers
             // Update changes in the database
             await databaseContext.SaveChangesAsync();
 
+            // Map the updated work item object into a work item view model
+            WorkItemViewModel workItemViewModel = _mapper.Map<WorkItemViewModel>(workItemToBeUpdated);
+
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
 
             // Add data to the response data
-            Response.StatusCode = 200;
             responseData.Add("status", "Done");
-            responseData.Add("data", workItemToBeUpdated);
+            responseData.Add("data", workItemViewModel);
 
             // Return response to the client
             return new JsonResult(responseData);

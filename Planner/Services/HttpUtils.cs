@@ -23,5 +23,22 @@ namespace Planner.Services
             // Return response to the client
             return new JsonResult(responseData);
         }
+
+        public IActionResult GenerateResponseData(int statusCode, List<string> listOfKeys, List<string> listOfData, HttpResponse response)
+        {
+            // Prepare the response data
+            var responseData = new Dictionary<string, object>();
+
+            for (int i = 0; i < listOfKeys.Count; i++)
+            {
+                responseData.Add(listOfKeys[i], listOfData[i]);
+            }
+
+            // Set the status code
+            response.StatusCode = statusCode;
+
+            // Return response to the client
+            return new JsonResult(responseData);
+        }
     }
 }

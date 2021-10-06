@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -31,9 +32,12 @@ namespace Planner.Controllers
         // Error getter
         private IErrorGetter _errorGetter;
 
+        // Auto mapper
+        private IMapper _mapper;
+
         // Constructor
         public AuthController(UserManager<User> userManager,
-            SignInManager<User> signInManager, IEmailSender emailSender, IErrorGetter errorGetter)
+            SignInManager<User> signInManager, IEmailSender emailSender, IErrorGetter errorGetter, IMapper mapper)
         {
             // Initialize user manager and sign in manager with DI
             this.userManager = userManager;
@@ -47,6 +51,9 @@ namespace Planner.Controllers
 
             // Initialize Error getter
             _errorGetter = errorGetter;
+
+            // Initialize auto mapper
+            _mapper = mapper;
         }
 
         // The function to view login page
@@ -137,12 +144,8 @@ namespace Planner.Controllers
             int createdUserProfileId = newUserProfileObject.Id;
 
             // Create the new user object
-            var newUser = new User
-            {
-                UserProfileId = createdUserProfileId,
-                Email = signUpViewModel.Email,
-                UserName = signUpViewModel.Email
-            };
+            var newUser = _mapper.Map<User>(signUpViewModel);
+            newUser.UserProfileId = createdUserProfileId;
 
             // Perform the sign up operation and get the result
             var result = await userManager.CreateAsync(newUser, signUpViewModel.Password);

@@ -82,12 +82,14 @@ namespace Planner.Data
             modelBuilder.Entity<RoleDetailUserProfile>()
                 .HasOne(roleDetailUserProfile => roleDetailUserProfile.UserProfile)
                 .WithMany(userProfile => userProfile.RoleDetailUserProfiles)
-                .HasForeignKey(roleDetailUserProfile => roleDetailUserProfile.UserProfileId);
+                .HasForeignKey(roleDetailUserProfile => roleDetailUserProfile.UserProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RoleDetailUserProfile>()
                 .HasOne(roleDetailUserProfile => roleDetailUserProfile.RoleDetail)
                 .WithMany(roleDetail => roleDetail.RoleDetailUserProfiles)
-                .HasForeignKey(roleDetailUserProfile => roleDetailUserProfile.RoleDetailId);
+                .HasForeignKey(roleDetailUserProfile => roleDetailUserProfile.RoleDetailId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Exclude "AspNet" from table names in IdentityDbContext
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

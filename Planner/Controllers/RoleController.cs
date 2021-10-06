@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Planner.Data;
 using Planner.ViewModels;
@@ -66,21 +63,11 @@ namespace Planner.Controllers
             var roleAssignments = await databaseContext.RoleDetailUserProfiles
                 .Include(roleDetailUserProfile => roleDetailUserProfile.UserProfile)
                 .Include(roleDetailUserProfile => roleDetailUserProfile.RoleDetail)
-                .ThenInclude(roleDetail => roleDetail.Role).ToListAsync();
+                .ThenInclude(roleDetail => roleDetail.Role)
+                .ToListAsync();
 
-            foreach (var roleAssignment in roleAssignments)
-            {
-                // Create the role assignment view model out of the role assignment
-                RoleAssignmentViewModel roleAssignmentViewModel = new RoleAssignmentViewModel
-                {
-                    Id = roleAssignment.Id,
-                    UserFullNameGetAssigned = roleAssignment.UserProfile.FullName,
-                    RoleNameAssignedToUser = roleAssignment.RoleDetail.Role.Name
-                };
-
-                // Add the created role assignment view model into the list
-                listOfRoleAssignmentViewModels.Add(roleAssignmentViewModel);
-            }
+            // Map list of role assignments into list of role assignment view models
+            listOfRoleAssignmentViewModels = _mapper.Map<List<RoleAssignmentViewModel>>(roleAssignments);
 
             // Create the role assignment list view model
             RoleAssignmentListViewModel roleAssignmentListViewModel = new RoleAssignmentListViewModel

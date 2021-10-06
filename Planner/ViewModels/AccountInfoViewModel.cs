@@ -3,9 +3,9 @@
     public class AccountInfoViewModel
     {
         // Full name of the currently logged in user
-        public string FullName { get; set; }
+        public string UserEmail { get; set; }
 
         // Email of the currently logged in user
-        public string Email { get; set; }
+        public string FullName { get; set; }
     }
 }

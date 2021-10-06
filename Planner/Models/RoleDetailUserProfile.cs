@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Planner.Models
+﻿namespace Planner.Models
 {
     public class RoleDetailUserProfile
     {

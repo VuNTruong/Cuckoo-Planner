@@ -1,26 +1,29 @@
 ﻿<Properties StartupConfiguration="{85FE47FF-8155-4DBB-9DA2-01A836D75303}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Controllers/WorkItemController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Data/DatabaseContext.cs">
     <Files>
-      <File FileName="Planner/Controllers/WorkItemAPIController.cs" Line="40" Column="32" />
-      <File FileName="Planner/ViewModels/WorkItemViewModel.cs" Line="20" Column="6" />
-      <File FileName="Planner/Controllers/RoleController.cs" Line="67" Column="85" />
-      <File FileName="Planner/Models/RoleDetailUserProfile.cs" Line="24" Column="1" />
-      <File FileName="Planner/Controllers/WorkItemController.cs" Line="83" Column="1" />
+      <File FileName="Planner/Views/User/AccountInfo.cshtml" Line="26" Column="21" />
+      <File FileName="Planner/Controllers/AuthAPIController.cs" Line="11" Column="35" />
+      <File FileName="Planner/Controllers/AuthController.cs" Line="36" Column="33" />
+      <File FileName="Planner/Controllers/RoleAPIController.cs" Line="105" Column="1" />
+      <File FileName="Planner/Data/DatabaseContext.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Planner" expanded="True">
             <Node name="Planner" expanded="True">
-              <Node name="Controllers" expanded="True">
-                <Node name="WorkItemController.cs" selected="True" />
+              <Node name="Controllers" expanded="True" />
+              <Node name="Data" expanded="True">
+                <Node name="DatabaseContext.cs" selected="True" />
               </Node>
-              <Node name="Data" expanded="True" />
               <Node name="Models" expanded="True" />
               <Node name="Profiles" expanded="True" />
               <Node name="Services" expanded="True" />
               <Node name="ViewModels" expanded="True" />
               <Node name="Views" expanded="True">
+                <Node name="Role" expanded="True" />
+                <Node name="Shared" expanded="True" />
+                <Node name="User" expanded="True" />
                 <Node name="WorkItem" expanded="True" />
               </Node>
               <Node name="wwwroot" expanded="True">

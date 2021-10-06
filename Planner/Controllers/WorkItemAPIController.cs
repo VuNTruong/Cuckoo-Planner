@@ -59,7 +59,6 @@ namespace Planner.Controllers
             var responseData = new Dictionary<string, object>();
 
             // Add data to the response data
-            Response.StatusCode = 200;
             responseData.Add("status", "Done");
             responseData.Add("data", listOfWorkItemViewModels);
 

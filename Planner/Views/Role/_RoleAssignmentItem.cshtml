@@ -1,9 +1,9 @@
 ﻿@model Planner.ViewModels.RoleAssignmentViewModel
 
 <div class="work-item" id="">
-    <p class="title" id="role-assignment-@Model.AssignedRole"></p>
-    <p class="detail">User: @Model.UserFullNameGetAssigned</p>
-    <p class="detail">Role: @Model.RoleNameAssignedToUser</p>
+    <p class="title" id="role-assignment-@Model.RoleDetailRoleName"></p>
+    <p class="detail">User: @Model.UserProfileFullName</p>
+    <p class="detail">Role: @Model.RoleDetailRoleName</p>
     <div class="options">
         <button class="button" id="@Model.Id">Remove</button>
     </div>

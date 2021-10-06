@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Planner.ViewModels;
 using Planner.Services;
+using AutoMapper;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -37,8 +38,12 @@ namespace Planner.Controllers
         // Error getter
         private IErrorGetter _errorGetter;
 
+        // Auto mapper
+        private IMapper _mapper;
+
+        // Constructor
         public AuthAPIController(UserManager<User> userManager,
-            SignInManager<User> signInManager, IEmailSender emailSender, IHttpUtils httpUtils, IErrorGetter errorGetter)
+            SignInManager<User> signInManager, IEmailSender emailSender, IHttpUtils httpUtils, IErrorGetter errorGetter, IMapper mapper)
         {
             // Initialize user manager and sign in manager with DI
             this.userManager = userManager;
@@ -55,15 +60,17 @@ namespace Planner.Controllers
 
             // Initialize error getter
             _errorGetter = errorGetter;
+
+            // Initialize auto mapper
+            _mapper = mapper;
         }
 
         // The function to create new user in the database
         [HttpPost("signUp")]
         public async Task<JsonResult> CreateUser([FromBody] SignUpViewModel signUpViewModel)
         {
-            // Response data for the client
-            List<string> responseBodyKeys;
-            List<object> responseBodyData;
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
             
             // Create the new user profile object
             var newUserProfileObject = new UserProfile
@@ -82,12 +89,8 @@ namespace Planner.Controllers
             int createdUserProfileId = newUserProfileObject.Id;
 
             // Create the new user object
-            var newUser = new User
-            {
-                UserProfileId = createdUserProfileId,
-                Email = signUpViewModel.Email,
-                UserName = signUpViewModel.Email
-            };
+            var newUser = _mapper.Map<User>(signUpViewModel);
+            newUser.UserProfileId = createdUserProfileId;
 
             // Perform the sign up operation and get the result
             var result = await userManager.CreateAsync(newUser, signUpViewModel.Password);
@@ -95,28 +98,25 @@ namespace Planner.Controllers
             if (result.Succeeded)
             {
                 // Add data to the response data
-                responseBodyKeys = new List<string> { "status", "data" };
-                responseBodyData = new List<object> { "Done", "User is created" };
-
-                return _httpUtils.GetResponseData(200, responseBodyKeys, responseBodyData, Response);
+                responseData.Add("status", "Done");
+                responseData.Add("data", "User is created");
             }
             else
             {
                 // Add data to the response data
-                responseBodyKeys = new List<string> { "status", "data" };
-                responseBodyData = new List<object> { "Uh Oh", $"Oops, there seems to be an error here {result.Errors}" };
-
-                return _httpUtils.GetResponseData(500, responseBodyKeys, responseBodyData, Response);
+                responseData.Add("status", "Not done");
+                responseData.Add("data", "There seem to be an error");
             }
+
+            return new JsonResult(responseData);
         }
 
         // The function to sign a user in
         [HttpPost("signIn")]
         public async Task<JsonResult> SignIn([FromBody] LoginViewModel loginViewModel)
         {
-            // Response data for the client
-            List<string> responseBodyKeys;
-            List<object> responseBodyData;
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
 
             // Perform the sign in operation and get the result
             var result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, true, false);
@@ -124,28 +124,25 @@ namespace Planner.Controllers
             if (result.Succeeded)
             {
                 // Add data to the response data
-                responseBodyKeys = new List<string> { "status", "data" };
-                responseBodyData = new List<object> { "Done", "You are signed in" };
-
-                return _httpUtils.GetResponseData(200, responseBodyKeys, responseBodyData, Response);
+                responseData.Add("status", "Done");
+                responseData.Add("data", "You are signed in");
             }
             else
             {
                 // Add data to the response data
-                responseBodyKeys = new List<string> { "status", "data", "errors" };
-                responseBodyData = new List<object> { "Not done", "There seem to be an error" , await _errorGetter.GetLoginError(loginViewModel.Email, result) };
-
-                return _httpUtils.GetResponseData(500, responseBodyKeys, responseBodyData, Response);
+                responseData.Add("status", "Not done");
+                responseData.Add("data", "There seem to be an error while signing you in");
             }
+
+            return new JsonResult(responseData);
         }
 
         // The function to check if user is signed in or not
         [HttpGet("checkSignInStatus")]
         public JsonResult CheckSignInStatus()
         {
-            // Response data for the client
-            List<string> responseBodyKeys;
-            List<object> responseBodyData;
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
 
             // Perform the checking operation and get the result
             var isSignedIn = signInManager.IsSignedIn(User);
@@ -153,56 +150,48 @@ namespace Planner.Controllers
             if (isSignedIn)
             {
                 // Add data to the response data
-                responseBodyKeys = new List<string> { "status", "data" };
-                responseBodyData = new List<object> { "Done", "You are signed in" };
-
-                return _httpUtils.GetResponseData(200, responseBodyKeys, responseBodyData, Response);
+                responseData.Add("status", "Done");
+                responseData.Add("data", "You are signed in");
             }
             else
             {
                 // Add data to the response data
-                responseBodyKeys = new List<string> { "status", "data" };
-                responseBodyData = new List<object> { "Done", "You are not signed in" };
-
-                return _httpUtils.GetResponseData(500, responseBodyKeys, responseBodyData, Response);
+                responseData.Add("status", "Done");
+                responseData.Add("data", "You are not signed in");
             }
+
+            return new JsonResult(responseData);
         }
 
         // The function to sign the user out
         [HttpPost("signOut")]
         public async Task<JsonResult> Logout()
         {
-            // Response data for the client
-            List<string> responseBodyKeys;
-            List<object> responseBodyData;
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
 
             // Perform the signing out operation and get the result
             await signInManager.SignOutAsync();
 
             // Add data to the response data
-            responseBodyKeys = new List<string> { "status", "data" };
-            responseBodyData = new List<object> { "Done", "You are not signed out" };
+            responseData.Add("status", "Done");
+            responseData.Add("data", "You are signed out");
 
-            // Return response to the client
-            return _httpUtils.GetResponseData(200, responseBodyKeys, responseBodyData, Response);
+            return new JsonResult(responseData);
         }
 
         // The function to send password reset token to user with specified email address
         [HttpPost("sendPasswordResetEmail")]
         public async Task<JsonResult> SendEmail(ResetPasswordViewModel resetPasswordViewModel)
         {
-            // Response data for the client
-            List<string> responseBodyKeys;
-            List<object> responseBodyData;
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
 
             // Use this to read request body
             var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
 
             // Convert JSON object into accessible object
             var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
-
-            // Prepare response data for the client
-            //var responseData = new Dictionary<string, object>();
 
             // Reference the database to get user object of the user who needs to get password reset token
             var userObject = await databaseContext.Users.Where((userObject) =>
@@ -213,11 +202,10 @@ namespace Planner.Controllers
             if (userObject.Count == 0)
             {
                 // Add data to the response data
-                responseBodyKeys = new List<string> { "status", "data" };
-                responseBodyData = new List<object> { "Not found", $"There is no account associated with the email {resetPasswordViewModel.Email}" };
+                responseData.Add("status", "Not found");
+                responseData.Add("data", $"There is no account associated with the email {resetPasswordViewModel.Email}");
 
-                // Return response to the client
-                return _httpUtils.GetResponseData(200, responseBodyKeys, responseBodyData, Response);
+                return new JsonResult(responseData);
             }
 
             // Call the function to generate password reset token for the user
@@ -227,17 +215,19 @@ namespace Planner.Controllers
             await emailSender.SendEmailAsync(resetPasswordViewModel.Email, "Reset password", $"Use this token to reset your password {resetToken}");
 
             // Add data to the response data
-            responseBodyKeys = new List<string> { "status", "data" };
-            responseBodyData = new List<object> { "Done", $"An email has been sent to {resetPasswordViewModel.Email}" };
+            responseData.Add("status", "Done");
+            responseData.Add("data", $"An email has been sent to {resetPasswordViewModel.Email}");
 
-            // Return response to the client
-            return _httpUtils.GetResponseData(200, responseBodyKeys, responseBodyData, Response);
+            return new JsonResult(responseData);
         }
 
         // The function to reset password for user with specified email address and reset password token
         [HttpPost("resetPassword")]
         public async Task<JsonResult> ResetPassword()
         {
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
+
             // Use this to read request body
             var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
 
@@ -256,10 +246,6 @@ namespace Planner.Controllers
             // Get new password confirm value of the user
             string newPasswordConfirm = requestBody["newPasswordConfirm"];
 
-            // Response data for the client
-            List<string> responseBodyKeys;
-            List<object> responseBodyData;
-
             // Reference the database to get user object of the user who needs to get password reset
             var userObject = (await databaseContext.Users.Where((userObject) =>
                 userObject.Email == userEmailToResetPassword
@@ -272,21 +258,21 @@ namespace Planner.Controllers
             if (passwordResetResult.Succeeded)
             {
                 // Add data to the response data
-                responseBodyKeys = new List<string> { "status", "data" };
-                responseBodyData = new List<object> { "Done", $"Password has been reset for {userEmailToResetPassword}" };
-
-                return _httpUtils.GetResponseData(200, responseBodyKeys, responseBodyData, Response);
+                responseData.Add("status", "Done");
+                responseData.Add("data", $"Password has been reset for {userEmailToResetPassword}");
             } // Otherwise, inform client of the error
             else
             {
                 // Add data to the response data
-                responseBodyKeys = new List<string> { "status", "data" };
-                responseBodyData = new List<object> { "Not done", "There seem to be an error" };
-
-                return _httpUtils.GetResponseData(500, responseBodyKeys, responseBodyData, Response);
+                responseData.Add("status", "Not done");
+                responseData.Add("data", "There seem to be an error");
             }
+
+            return new JsonResult(responseData);
         }
 
+        // Only use this one if you screw things up so bad
+        // If it's still fixable, DON'T TOUCH IT
         [HttpDelete("deleteEveryUser")]
         public async void DeleteAll()
         {

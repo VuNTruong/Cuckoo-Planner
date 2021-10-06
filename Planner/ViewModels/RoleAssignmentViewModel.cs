@@ -1,4 +1,6 @@
-﻿namespace Planner.ViewModels
+﻿using Planner.Models;
+
+namespace Planner.ViewModels
 {
     public class RoleAssignmentViewModel
     {
@@ -6,15 +8,9 @@
         public int Id { get; set; }
 
         // Name of the user that get assigned
-        public string UserFullNameGetAssigned { get; set; }
-
-        // Name of role assigned to user
-        public string RoleNameAssignedToUser { get; set; }
-
-        // User id of the user that get assigned
-        public string UserIdGetAssigned { get; set; }
+        public string UserProfileFullName { get; set; }
 
         // Role name that the user get assigned to
-        public string AssignedRole { get; set; }
+        public string RoleDetailRoleName { get; set; }
     }
 }

@@ -9,13 +9,19 @@ namespace Planner.Profiles
     {
         public RoleProfile()
         {
+            CreateMap<RoleDetail, RoleViewModel>();
+
+            CreateMap<RoleDetailUserProfile, RoleAssignmentViewModel>();
+
             CreateMap<Role, RoleViewModel>()
-                .ForMember(dest =>
-                    dest.RoleId,
-                    opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest =>
-                    dest.RoleName,
-                    opt => opt.MapFrom(src => src.Name));
+                .ForMember(
+                    dest => dest.RoleId,
+                    opt => opt.MapFrom(src => src.Id)
+                )
+                .ForMember(
+                    dest => dest.RoleName,
+                    opt => opt.MapFrom(src => src.Name)
+                );
         }
     }
 }

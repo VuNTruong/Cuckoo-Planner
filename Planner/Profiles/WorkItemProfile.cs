@@ -10,6 +10,8 @@ namespace Planner.Profiles
         public WorkItemProfile()
         {
             CreateMap<WorkItem, WorkItemViewModel>();
+
+            CreateMap<WorkItemViewModel, WorkItem>();
         }
     }
 }

@@ -1,6 +1,10 @@
-﻿@model Planner.ViewModels.RoleAssignmentListViewModel
+﻿@using Planner.ViewModels
+
 @{
     ViewData["Title"] = "Role assignments";
+
+    // Get list of role assignments from controller
+    var roleAssignments = ViewData["RoleAssignments"] as List<RoleAssignmentViewModel>;
 }
 
 <h2>@ViewData["Header"]</h2>
@@ -16,7 +20,7 @@
 </div>
 
 <div class="list-of-work-item">
-    @foreach (var roleAssignment in Model.RoleAssignments)
+    @foreach (var roleAssignment in roleAssignments)
     {
         @await Html.PartialAsync("_RoleAssignmentItem", roleAssignment);
     }

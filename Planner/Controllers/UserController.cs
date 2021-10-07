@@ -1,14 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Planner.Data;
-using Microsoft.EntityFrameworkCore;
-using Planner.ViewModels;
-using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Planner.Data;
+using Planner.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,6 +23,7 @@ namespace Planner.Controllers
         // Constructor
         public UserController (IMapper mapper)
         {
+            // Initialize auto mapper
             _mapper = mapper;
         }
 
@@ -40,14 +40,38 @@ namespace Planner.Controllers
             var databaseContext = new DatabaseContext();
 
             // Reference the database, include user identity object as well
-            var currentUserObject = await databaseContext.UserProfiles
+            var userObject = await databaseContext.UserProfiles
                 .Include(userProfile => userProfile.User)
                 .FirstOrDefaultAsync(userProfile => userProfile.User.Id == currentUserId);
 
-            // Map user profile object into account info view model
-            var accountInfoViewModel = _mapper.Map<AccountInfoViewModel>(currentUserObject);
+            // Map user object into user view model
+            var userViewModel = _mapper.Map<UserProfileViewModel>(userObject);
 
-            return View(accountInfoViewModel);
+            return View(userViewModel);
+        }
+
+        // The view where user can see list of users (for admin)
+        [HttpGet("userManager")]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> UserManager()
+        {
+            ViewData["Header"] = "User manager";
+
+            // The database context
+            var databaseContext = new DatabaseContext();
+
+            // Reference the database to get list of all users
+            var listOfUsers = await databaseContext.UserProfiles
+                .Include(userProfile => userProfile.User)
+                .Include(userProfile => userProfile.RoleDetailUserProfiles).ThenInclude(r => r.RoleDetail).ThenInclude(roleDetail => roleDetail.Role)
+                .ToListAsync();
+
+            // Map list of user profile objects into list of user profile view models
+            var listOfUserViewModels = _mapper.Map<List<UserProfileViewModel>>(listOfUsers);
+
+            // Return the view
+            ViewData["Users"] = listOfUserViewModels;
+            return View();
         }
     }
 }

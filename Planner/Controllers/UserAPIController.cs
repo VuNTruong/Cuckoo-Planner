@@ -10,6 +10,7 @@ using System.IO;
 using Planner.Utils;
 using Microsoft.AspNetCore.Http;
 using Planner.ViewModels;
+using AutoMapper;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,37 +26,44 @@ namespace Planner.Controllers
         // User manager manager
         private readonly UserManager<User> userManager;
 
+        // Auto mapper
+        private IMapper _mapper;
+
         // Constructor
-        public UserAPIController(UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
+        public UserAPIController(UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             // Initialize user manager with DI
             this.userManager = userManager;
 
             // Initialize current user utils
             currentUserUtils = new CurrentUserUtils(httpContextAccessor);
+
+            // Initialize auto mapper
+            _mapper = mapper;
         }
 
         // The function to get all users
         [HttpGet("getAllUsers")]
         public async Task<JsonResult> GetAllUsers()
         {
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
+
             // The database context
             var databaseContext = new DatabaseContext();
 
             // Start querying the database to get list of all users
-            // also include all work items and user identity object
-            // associated with the user
             var listOfUsers = await databaseContext.UserProfiles
-                .Include(userProfile => userProfile.WorkItems)
-                .Include(userProfile => userProfile.User).ToListAsync();
+                .Include(userProfile => userProfile.User)
+                .Include(userProfile => userProfile.RoleDetailUserProfiles)
+                .ToListAsync();
 
-            // Prepare response data for the client
-            var responseData = new Dictionary<string, object>();
+            // Map list of user profile objects into list of user profile view models
+            var listOfUserViewModels = _mapper.Map<List<UserProfileViewModel>>(listOfUsers);
 
             // Add data to response data
-            Response.StatusCode = 200;
             responseData.Add("status", "Done");
-            responseData.Add("data", listOfUsers);
+            responseData.Add("data", listOfUserViewModels);
 
             // Return response to the client
             return new JsonResult(responseData);
@@ -72,17 +80,15 @@ namespace Planner.Controllers
             using var databaseContext = new DatabaseContext();
 
             // Reference the database, include user identity object as well
-            var currentUserObject = (await databaseContext.UserProfiles
+            var currentUserObject = await databaseContext.UserProfiles
                 .Include(userProfile => userProfile.User)
                 .Include(userProfile => userProfile.WorkItems)
-                .Where((userProfile) => userProfile.Id == currentUserId)
-                .ToListAsync())[0];
+                .FirstOrDefaultAsync((userProfile) => userProfile.Id == currentUserId);
 
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
 
             // Add data to the response data
-            Response.StatusCode = 200;
             responseData.Add("status", "Done");
             responseData.Add("data", currentUserObject);
 
@@ -113,7 +119,6 @@ namespace Planner.Controllers
             if (result.Succeeded)
             {
                 // Add data to the response data
-                Response.StatusCode = 200;
                 responseData.Add("status", "Done");
                 responseData.Add("data", "Password has been updated");
             } else
@@ -132,12 +137,6 @@ namespace Planner.Controllers
         [HttpPatch("changeEmail")]
         public async Task<JsonResult> ChangeEmail([FromBody] ChangeEmailViewModel changeEmailViewModel)
         {
-            //// Read request body
-            //var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
-
-            //// Convert JSON object into accessible object (Dict)
-            //var requestBody = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
-
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
 
@@ -152,7 +151,6 @@ namespace Planner.Controllers
             await userManager.UpdateAsync(currentUserObject);
 
             // Add data to the response data
-            Response.StatusCode = 200;
             responseData.Add("status", "Done");
             responseData.Add("data", "Email has been updated ");
 

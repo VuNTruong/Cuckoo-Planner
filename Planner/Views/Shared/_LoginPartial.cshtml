@@ -18,17 +18,17 @@
         <li class="nav-item">
             <a class="nav-link text-dark" id="role_assignment" href="/role/roleAssignment">Roles assignment</a>
         </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-dark" id="work_item_manager" href="/main/GetAllWorkItems">Work items manager</a>
-        </li>
     }
 
-    if (User.IsInRole("Manager"))
+    if (User.IsInRole("Manager") || User.IsInRole("Admin"))
     {
         <li class="nav-item">
             <a class="nav-link text-dark" id="work_item_manager" href="/main/GetAllWorkItems">Work items manager</a>
-        </li>  
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="work_item_manager" href="/user/userManager">User manager</a>
+        </li>
     }
 
     if (SignInManager.IsSignedIn(User))

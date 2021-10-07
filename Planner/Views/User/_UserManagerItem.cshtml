@@ -1,0 +1,20 @@
+﻿@model Planner.ViewModels.UserProfileViewModel;
+
+<div class="work-item" id="@Model.Id">
+    <p class="title" id="title-@Model.Id">@Model.FullName</p>
+    <p class="detail" id="detail-@Model.Id">
+        Email: @Model.UserEmail
+    </p>
+
+    <ul>
+        @foreach (var roleDetailUserProfile in Model.RoleDetailUserProfiles)
+        {
+            <li>@roleDetailUserProfile.RoleDetail.Role.Name</li>
+        }
+    </ul>
+
+    <div class="options">
+        <button class="button" id="@Model.Id">Disable</button>
+        <button class="button" id="@Model.Id">Reset password</button>
+    </div>
+</div>

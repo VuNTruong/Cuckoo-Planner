@@ -1,8 +1,11 @@
 ﻿@*This will contain several WorkItemOverviewItems*@
 
-@model Planner.ViewModels.WorkItemListViewModel;
+@using Planner.ViewModels;
 @{
     ViewData["Title"] = "List of Tasks";
+
+    // Get list of work items from the controller via view data
+    var workItems = ViewData["WorkItems"] as List<WorkItemViewModel>;
 }
 
 <h2>@ViewData["Header"]</h2>
@@ -18,7 +21,7 @@
 </div>
 
 <div class="list-of-work-item">
-    @foreach (var workItem in Model.WorkItems)
+    @foreach (var workItem in workItems)
     {
         @await Html.PartialAsync("_WorkItemOverviewItem", workItem);
     }

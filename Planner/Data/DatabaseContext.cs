@@ -75,21 +75,20 @@ namespace Planner.Data
             modelBuilder.Entity<RoleDetail>()
                 .HasOne(roleDetail => roleDetail.Role)
                 .WithOne(role => role.RoleDetail)
-                .HasForeignKey<Role>(role => role.RoleDetailId);
+                .HasForeignKey<Role>(role => role.RoleDetailId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Create the relationship between User and Role
+            // Create the relationship between User profile and Role detail
             // Many to many
             modelBuilder.Entity<RoleDetailUserProfile>()
                 .HasOne(roleDetailUserProfile => roleDetailUserProfile.UserProfile)
                 .WithMany(userProfile => userProfile.RoleDetailUserProfiles)
-                .HasForeignKey(roleDetailUserProfile => roleDetailUserProfile.UserProfileId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(roleDetailUserProfile => roleDetailUserProfile.UserProfileId);
 
             modelBuilder.Entity<RoleDetailUserProfile>()
                 .HasOne(roleDetailUserProfile => roleDetailUserProfile.RoleDetail)
                 .WithMany(roleDetail => roleDetail.RoleDetailUserProfiles)
-                .HasForeignKey(roleDetailUserProfile => roleDetailUserProfile.RoleDetailId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(roleDetailUserProfile => roleDetailUserProfile.RoleDetailId);
 
             // Exclude "AspNet" from table names in IdentityDbContext
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

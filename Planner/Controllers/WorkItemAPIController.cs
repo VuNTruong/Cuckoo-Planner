@@ -41,8 +41,8 @@ namespace Planner.Controllers
         [HttpGet]
         public async Task<JsonResult> GetWorkItems()
         {
-            // List of work item manager view models
-            List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
 
             // Database context
             var databaseContext = new DatabaseContext();
@@ -53,10 +53,7 @@ namespace Planner.Controllers
                 .ToListAsync();
 
             // Map list of work items into list of work item view models
-            listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
-
-            // Prepare response data for the client
-            var responseData = new Dictionary<string, object>();
+            List<WorkItemViewModel> listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
 
             // Add data to the response data
             responseData.Add("status", "Done");
@@ -70,8 +67,8 @@ namespace Planner.Controllers
         [HttpGet("getWorkItemsOfCurrentUser")]
         public async Task<JsonResult> GetWorkItemsOfCurrentUser()
         {
-            // List of work item view models
-            List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
 
             // Database context
             var databaseContext = new DatabaseContext();
@@ -79,16 +76,13 @@ namespace Planner.Controllers
             // Call the function to get info of the currently logged in user
             int currentUserId = await currentUserUtils.GetCurrentUserId();
 
-            // Prepare response data for the client
-            var responseData = new Dictionary<string, object>();
-
             // Reference the database to get work items created by the currently logged in user
             var workItems = await databaseContext.WorkItems.Where((workItem) =>
                 workItem.CreatorId == currentUserId
             ).ToListAsync();
 
             // Map list of work item models into list of work item view models
-            listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
+            List<WorkItemViewModel> listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
 
             // Add data to the response data
             responseData.Add("status", "Done");
@@ -100,25 +94,20 @@ namespace Planner.Controllers
 
         // The function to create new work item in the database
         [HttpPost]
-        public async Task<JsonResult> CreateWorkItem([FromBody] AddWorkItemViewModel addWorkItemViewModel)
+        public async Task<JsonResult> CreateWorkItem([FromBody] WorkItemViewModel newWorkItemViewModel)
         {
-            // The database context
-            var databaseContext = new DatabaseContext();
-
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
+
+            // The database context
+            var databaseContext = new DatabaseContext();
 
             // Call the function to get user if of the currently logged in user
             int currentUserId = await currentUserUtils.GetCurrentUserId();
 
-            // Create the new work item object
-            WorkItem newWorkItemObject = new WorkItem
-            {
-                Content = addWorkItemViewModel.Content,
-                Title = addWorkItemViewModel.Title,
-                CreatorId = currentUserId,
-                DateCreated = addWorkItemViewModel.DateCreated
-            };
+            // Map the new work item view model into new work item object
+            WorkItem newWorkItemObject = _mapper.Map<WorkItem>(newWorkItemViewModel);
+            newWorkItemObject.CreatorId = currentUserId;
 
             // Start querying the database
             await databaseContext.WorkItems
@@ -148,7 +137,7 @@ namespace Planner.Controllers
             // Reference the database to get work item object of the item to be
             // deleted
             var workItemToBeDeleted = databaseContext.WorkItems
-                .Single(workitem => workitem.Id == workItemId);
+                .FirstOrDefaultAsync(workitem => workitem.Id == workItemId);
 
             // Delete the found work item
             databaseContext.Remove(workItemToBeDeleted);
@@ -169,7 +158,7 @@ namespace Planner.Controllers
 
         // The function to update a work item in the database
         [HttpPatch]
-        public async Task<JsonResult> UpdateWorkItem([FromBody] UpdateWorkItemViewModel updateWorkItemViewModel)
+        public async Task<JsonResult> UpdateWorkItem([FromBody] WorkItemViewModel updateWorkItemViewModel)
         {
             // Get id of work item to be updated
             int workItemIdToBeUpdated = int.Parse(Request.Query["workItemId"]);
@@ -178,8 +167,8 @@ namespace Planner.Controllers
             var databaseContext = new DatabaseContext();
 
             // Reference the database to get object of the work item to be updated
-            var workItemToBeUpdated = databaseContext.WorkItems
-                .Single((workItem) => workItem.Id == workItemIdToBeUpdated);
+            var workItemToBeUpdated = await databaseContext.WorkItems
+                .FirstOrDefaultAsync((workItem) => workItem.Id == workItemIdToBeUpdated);
 
             // Update the work item
             workItemToBeUpdated.Content = updateWorkItemViewModel.Content;

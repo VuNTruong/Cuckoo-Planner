@@ -9,8 +9,6 @@ namespace Planner.Profiles
     {
         public UserProfile()
         {
-            CreateMap<User, UserViewModel>();
-
             CreateMap<SignUpViewModel, User>()
                 .ForMember(
                     dest => dest.UserName,
@@ -21,7 +19,7 @@ namespace Planner.Profiles
                     opt => opt.MapFrom(src => src.Email)
                 );
 
-            CreateMap<Models.UserProfile, AccountInfoViewModel>();
+            CreateMap<Models.UserProfile, UserProfileViewModel>();
         }
     }
 }

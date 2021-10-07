@@ -3,14 +3,18 @@
 -- delete from roledetail where Id = 5;
 -- delete from roles where Id = '7d5c8faf-6f4d-42ba-becb-61bd975a60e1';
 
--- delete from UserRoles where UserId = '7f610a19-9e7d-4cbd-a948-fb47fb572f5b' AND RoleId = '6cabc317-6082-4f8b-85bf-68562657413a';
--- DELETE from roledetailuserprofile where Id = '1002';
+-- select * from roledetail;
+-- select * from UserRoles;
+-- SELECT * FROM Roles;
+-- SELECT * FROM Users;
+-- SELECT * from roledetailuserprofile;
 
-select * from roledetail;
-select * from UserRoles;
-SELECT * FROM Roles;
-SELECT * FROM Users;
-SELECT * from roledetailuserprofile;
+select * from roledetailuserprofile
+-- DELETE from userprofiles WHERE Id = 4
+
+-- SELECT * from workitems
+-- delete from workitems where Id = 1071;
+
 -- select * from roledetail
 -- delete from roledetailuserprofile;
 -- delete from UserRoles;

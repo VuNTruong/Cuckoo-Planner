@@ -41,9 +41,6 @@ namespace Planner.Controllers
         {
             ViewData["Header"] = "Hello there!";
 
-            // List of work item view models
-            List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
-
             // Database context
             var databaseContext = new DatabaseContext();
 
@@ -56,16 +53,11 @@ namespace Planner.Controllers
             ).ToListAsync();
 
             // Map list of work item models into list of work item view models
-            listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(listOfWorkItems);
+            List<WorkItemViewModel>  listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(listOfWorkItems);
 
-            // Initialize view model
-            var workItemListViewModel = new WorkItemListViewModel
-            {
-                WorkItems = listOfWorkItemViewModels
-            };
-
+            ViewData["WorkItems"] = listOfWorkItemViewModels;
             // Return the view with updated view model
-            return View(workItemListViewModel);
+            return View();
         }
 
         // The function to get all work items in the database
@@ -88,13 +80,9 @@ namespace Planner.Controllers
             // Map list of work item models into list of work item view models
             listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(listOfWorkItems);
 
-            var workItemListViewModel = new WorkItemListViewModel
-            {
-                WorkItems = listOfWorkItemViewModels
-            };
-
             // Return the view with updated view model
-            return View(workItemListViewModel);
+            ViewData["WorkItems"] = listOfWorkItemViewModels;
+            return View();
         }
     }
 }

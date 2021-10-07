@@ -32,9 +32,6 @@ namespace Planner.Controllers
         // Database context
         private readonly DatabaseContext databaseContext;
 
-        // Http Utils
-        private IHttpUtils _httpUtils;
-
         // Error getter
         private IErrorGetter _errorGetter;
 
@@ -43,7 +40,7 @@ namespace Planner.Controllers
 
         // Constructor
         public AuthAPIController(UserManager<User> userManager,
-            SignInManager<User> signInManager, IEmailSender emailSender, IHttpUtils httpUtils, IErrorGetter errorGetter, IMapper mapper)
+            SignInManager<User> signInManager, IEmailSender emailSender, IErrorGetter errorGetter, IMapper mapper)
         {
             // Initialize user manager and sign in manager with DI
             this.userManager = userManager;
@@ -54,9 +51,6 @@ namespace Planner.Controllers
 
             // Initialize database context
             databaseContext = new DatabaseContext();
-
-            // Initialize Http utils
-            _httpUtils = httpUtils;
 
             // Initialize error getter
             _errorGetter = errorGetter;

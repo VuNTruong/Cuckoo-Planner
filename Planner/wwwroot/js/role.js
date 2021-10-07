@@ -64,3 +64,8 @@ function onAssignRole() {
         }
     })
 }
+
+// The function to remove role from a user
+function onRemoveRole() {
+    // Get value of the 
+}

@@ -1,0 +1,17 @@
+﻿@using Planner.ViewModels
+
+@{
+    ViewData["Title"] = "List of users";
+
+    // Get list of user profiles from controller
+    var users = ViewData["Users"] as List<UserProfileViewModel>;
+}
+
+<h2>@ViewData["Header"]</h2>
+
+<div class="list-of-work-item">
+    @foreach (var user in users)
+    {
+        @await Html.PartialAsync("_UserManagerItem", user);
+    }
+</div>

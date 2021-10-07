@@ -34,28 +34,17 @@ namespace Planner.Controllers
         // The function to get all roles in the system
         public IActionResult RoleOverview()
         {
-            // List of role view models
-            List<RoleViewModel> listOfRoleViewModels = new List<RoleViewModel>();
-
             // Map list of roles into list of role view models
-            listOfRoleViewModels = _mapper.Map<List<RoleViewModel>>(_roleManager.Roles);
+            List<RoleViewModel>  listOfRoleViewModels = _mapper.Map<List<RoleViewModel>>(_roleManager.Roles);
 
-            // Create the role list view model
-            RoleListViewModel roleListViewModel = new RoleListViewModel
-            {
-                ListOfRolesViewModels = listOfRoleViewModels
-            };
-
-            return View(roleListViewModel);
+            ViewData["Roles"] = listOfRoleViewModels;
+            return View();
         }
 
         // The function to get role assignments
         [HttpGet("roleAssignment")]
         public async Task<IActionResult> RoleAssignmentAsync()
         {
-            // List of role assignment view models
-            List<RoleAssignmentViewModel> listOfRoleAssignmentViewModels = new List<RoleAssignmentViewModel>();
-
             // The database context
             DatabaseContext databaseContext = new DatabaseContext();
 
@@ -67,15 +56,10 @@ namespace Planner.Controllers
                 .ToListAsync();
 
             // Map list of role assignments into list of role assignment view models
-            listOfRoleAssignmentViewModels = _mapper.Map<List<RoleAssignmentViewModel>>(roleAssignments);
+            List<RoleAssignmentViewModel>  listOfRoleAssignmentViewModels = _mapper.Map<List<RoleAssignmentViewModel>>(roleAssignments);
 
-            // Create the role assignment list view model
-            RoleAssignmentListViewModel roleAssignmentListViewModel = new RoleAssignmentListViewModel
-            {
-                RoleAssignments = listOfRoleAssignmentViewModels
-            };
-
-            return View(roleAssignmentListViewModel);
+            ViewData["RoleAssignments"] = listOfRoleAssignmentViewModels;
+            return View();
         }
     }
 }

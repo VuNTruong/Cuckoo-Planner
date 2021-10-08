@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Planner.Data;
 using Planner.Models;
-using Planner.Utils;
+using Planner.Services;
 using Planner.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,17 +19,17 @@ namespace Planner.Controllers
     [Authorize]
     public class WorkItemController : Controller
     {
-        // Current user utils (this wil be used to get user id of the currently logged in user)
-        private readonly CurrentUserUtils currentUserUtils;
+        // Current user service (this will be used to get user id of the currently logged in user)
+        private readonly ICurrentUser _currentUserService;
 
         // Auto mapper
         private readonly IMapper _mapper;
 
         // Constructor
-        public WorkItemController(IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        public WorkItemController(IMapper mapper, ICurrentUser currentUserService)
         {
-            // Initialize current user utils
-            currentUserUtils = new CurrentUserUtils(httpContextAccessor);
+            // Initialize current user service
+            _currentUserService = currentUserService;
 
             // Initialize auto mapper
             _mapper = mapper;
@@ -45,7 +45,7 @@ namespace Planner.Controllers
             var databaseContext = new DatabaseContext();
 
             // Call the function to get info of the currently logged in user
-            int currentUserId = await currentUserUtils.GetCurrentUserId();
+            int currentUserId = await _currentUserService.GetCurrentUserId();
 
             // Reference the database to get work items created by the currently logged in user
             List<WorkItem> listOfWorkItems = await databaseContext.WorkItems.Where((workItem) =>

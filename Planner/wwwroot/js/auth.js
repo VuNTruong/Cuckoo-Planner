@@ -28,6 +28,26 @@ function sendPasswordResetTokenToUserWithEmail(event, emailParam) {
     })
 }
 
+// The function to send password reset token to user with specified user id
+function sendPasswordResetTokenToUserWithId(userId) {
+    // Use Ajax to perform the call and send password reset token to the user
+    $.ajax({
+        ur: "https://localhost:5001/api/v1/Auth/sendPasswordResetEmailBasedOnId",
+        type: "POST",
+        dataType: "json",
+        cache: false,
+        data: JSON.stringify({
+            "userId": userId
+        }),
+        success: function (responseData) {
+            console.log(responseData);
+        },
+        error: function (responseData) {
+            console.log(responseData);
+        }
+    })
+}
+
 // The function to reset password for the user with specified email address and password reset token
 function resetUserPasswordBasedOnTokenAndEmail(event) {
     // Prevent any default

@@ -1,0 +1,10 @@
+/Users/vntruong/Documents/VS/unit-testing-using-dotnet-test/UserAPIService/obj/Debug/net5.0/UserAPIService.csproj.AssemblyReference.cache
+/Users/vntruong/Documents/VS/unit-testing-using-dotnet-test/UserAPIService/obj/Debug/net5.0/UserAPIService.GeneratedMSBuildEditorConfig.editorconfig
+/Users/vntruong/Documents/VS/unit-testing-using-dotnet-test/UserAPIService/obj/Debug/net5.0/UserAPIService.AssemblyInfoInputs.cache
+/Users/vntruong/Documents/VS/unit-testing-using-dotnet-test/UserAPIService/obj/Debug/net5.0/UserAPIService.AssemblyInfo.cs
+/Users/vntruong/Documents/VS/unit-testing-using-dotnet-test/UserAPIService/obj/Debug/net5.0/UserAPIService.csproj.CoreCompileInputs.cache
+/Users/vntruong/Documents/VS/Planner/unit-testing-using-dotnet-test/UserAPIService/obj/Debug/net5.0/UserAPIService.csproj.AssemblyReference.cache
+/Users/vntruong/Documents/VS/Planner/unit-testing-using-dotnet-test/UserAPIService/obj/Debug/net5.0/UserAPIService.GeneratedMSBuildEditorConfig.editorconfig
+/Users/vntruong/Documents/VS/Planner/unit-testing-using-dotnet-test/UserAPIService/obj/Debug/net5.0/UserAPIService.AssemblyInfoInputs.cache
+/Users/vntruong/Documents/VS/Planner/unit-testing-using-dotnet-test/UserAPIService/obj/Debug/net5.0/UserAPIService.AssemblyInfo.cs
+/Users/vntruong/Documents/VS/Planner/unit-testing-using-dotnet-test/UserAPIService/obj/Debug/net5.0/UserAPIService.csproj.CoreCompileInputs.cache

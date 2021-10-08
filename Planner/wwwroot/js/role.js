@@ -54,8 +54,8 @@ function onAssignRole() {
             $('.list-of-work-item').append(`
                 <div class="work-item" id="">
                     <p class="title" id=""></p>
-                    <p class="detail">User: ${responseData.user.userProfile.fullName}</p>
-                    <p class="detail">Role: ${responseData.role.name}</p>
+                    <p class="detail">User: ${responseData.user.fullName}</p>
+                    <p class="detail">Role: ${responseData.role.roleName}</p>
                     <div class="options">
                         <button class="button" id="">Remove</button>
                     </div>
@@ -66,6 +66,21 @@ function onAssignRole() {
 }
 
 // The function to remove role from a user
-function onRemoveRole() {
-    // Get value of the 
+function onRoleRemove(roleDetailUserProfileIdToBeRemoved) {
+    // Use Ajax to remove role from a user
+    $.ajax({
+        url: "https://localhost:5001/api/v1/Role/removeRoleFromAUser",
+        type: "POST",
+        data: JSON.stringify({
+            "Id": roleDetailUserProfileIdToBeRemoved
+        }),
+        contentType: "application/json",
+        dataType: "json",
+        cache: false,
+        success: function (responseData) {
+            // At this point, role assignment is already removed from the database, we will now need
+            // to remove it from list of roles here
+            $("div").remove(`#${roleDetailUserProfileIdToBeRemoved}`);
+        }
+    })
 }

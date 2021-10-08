@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Planner.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Planner.Models;
-using System.IO;
-using Planner.Utils;
-using Microsoft.AspNetCore.Http;
-using Planner.ViewModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Planner.Data;
+using Planner.Models;
+using Planner.Services;
+using Planner.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,8 +17,8 @@ namespace Planner.Controllers
     [ApiController]
     public class UserAPIController : Controller
     {
-        // Current user utils (this will be used to get user id of the currently logged in user)
-        private readonly CurrentUserUtils currentUserUtils;
+        // Current user service (this will be used to get user id of the currently logged in user)
+        private readonly ICurrentUser _currentUserService;
 
         // User manager manager
         private readonly UserManager<User> userManager;
@@ -30,13 +27,13 @@ namespace Planner.Controllers
         private IMapper _mapper;
 
         // Constructor
-        public UserAPIController(UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        public UserAPIController(UserManager<User> userManager, IMapper mapper, ICurrentUser currentUserService)
         {
             // Initialize user manager with DI
             this.userManager = userManager;
 
-            // Initialize current user utils
-            currentUserUtils = new CurrentUserUtils(httpContextAccessor);
+            // Initialize current user service
+            _currentUserService = currentUserService;
 
             // Initialize auto mapper
             _mapper = mapper;
@@ -74,7 +71,7 @@ namespace Planner.Controllers
         public async Task<JsonResult> GetCurrentUserInfo()
         {
             // Call the function to get user id of the currently logged in user
-            int currentUserId = await currentUserUtils.GetCurrentUserId();
+            int currentUserId = await _currentUserService.GetCurrentUserId();
 
             // The database context
             using var databaseContext = new DatabaseContext();
@@ -100,17 +97,11 @@ namespace Planner.Controllers
         [HttpPatch("changePassword")]
         public async Task<JsonResult> ChangePassword([FromBody] ChangePasswordViewModel changePasswordViewModel)
         {
-            // Read request body
-            var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
-
-            // Convert JSON object into Dictionary object
-            var requestBody = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
-
             // Prepare response for the client
             var responseData = new Dictionary<string, object>();
 
             // Call the function to get info of the currently logged in user
-            User currentUserObject = await currentUserUtils.GetCurrentUserObject();
+            User currentUserObject = await _currentUserService.GetCurrentUserObject();
 
             // Start with password changing here
             var result = await userManager.ChangePasswordAsync(currentUserObject, changePasswordViewModel.CurrentPassword, changePasswordViewModel.NewPassword);
@@ -141,7 +132,7 @@ namespace Planner.Controllers
             var responseData = new Dictionary<string, object>();
 
             // Get user object of the currently logged in user
-            User currentUserObject = await currentUserUtils.GetCurrentUserObject();
+            User currentUserObject = await _currentUserService.GetCurrentUserObject();
 
             // Change username and email
             currentUserObject.Email = changeEmailViewModel.NewEmail;

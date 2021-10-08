@@ -31,10 +31,9 @@ namespace Planner.Utils
         public async Task<int> GetCurrentUserId()
         {
             // Reference the database, include user identity object as well
-            var currentUserObject = (await databaseContext.UserProfiles
+            var currentUserObject = await databaseContext.UserProfiles
                 .Include(userProfile => userProfile.User)
-                .Where(userProfile => userProfile.User.Id == currentUserId)
-                .ToListAsync())[0];
+                .FirstOrDefaultAsync(userProfile => userProfile.User.Id == currentUserId);
 
             // Return the obtained user id
             return currentUserObject.Id;

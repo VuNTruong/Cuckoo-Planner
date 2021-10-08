@@ -9,8 +9,10 @@
 -- SELECT * FROM Users;
 -- SELECT * from roledetailuserprofile;
 
-select * from roledetailuserprofile
--- DELETE from userprofiles WHERE Id = 4
+delete from roledetailuserprofile WHERE Id = 3007;
+select * from roledetailuserprofile;
+SELECT * FROM UserRoles
+SELECT * FROM Roles
 
 -- SELECT * from workitems
 -- delete from workitems where Id = 1071;

@@ -15,6 +15,6 @@
 
     <div class="options">
         <button class="button" id="@Model.Id">Disable</button>
-        <button class="button" id="@Model.Id">Reset password</button>
+        <button class="button" id="@Model.Id" onclick="sendPasswordResetTokenToUserWithId(event.target.id)">Reset password</button>
     </div>
 </div>

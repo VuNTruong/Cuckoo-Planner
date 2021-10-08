@@ -170,36 +170,42 @@ namespace Planner.Controllers
                 .Include(userProfile => userProfile.User)
                 .FirstOrDefaultAsync(userProfile => userProfile.Id == removeRoleFromAUserViewModel.UserId);
 
-            // Reference the database to get role object of the role that will be removed from the user
-            // Also map it to the role view model
-            var roleViewModel = _mapper.Map<RoleViewModel>((await databaseContext.RoleDetails
-                .Include(roleDetail => roleDetail.Role)
-                .FirstOrDefaultAsync(roleDetail => roleDetail.Id == removeRoleFromAUserViewModel.RoleId)).Role);
+            //// Reference the database to get role object of the role that will be removed from the user
+            //// Also map it to the role view model
+            //var roleViewModel = _mapper.Map<RoleViewModel>((await databaseContext.RoleDetails
+            //    .Include(roleDetail => roleDetail.Role)
+            //    .FirstOrDefaultAsync(roleDetail => roleDetail.Id == removeRoleFromAUserViewModel.RoleId)).Role);
+
+            //// Reference the database to get role detail user profile object which is going to be removed
+            //var roleDetailUserProfileObjectToBeRemoved = await databaseContext.RoleDetailUserProfiles
+            //    .Where(roleDetailUserProfile => roleDetailUserProfile.RoleDetailId == removeRoleFromAUserViewModel.RoleId)
+            //    .Where(roleDetailUserprofile => roleDetailUserprofile.UserProfileId == removeRoleFromAUserViewModel.UserId)
+            //    .FirstOrDefaultAsync();
 
             // Reference the database to get role detail user profile object which is going to be removed
-            var roleDetailUserProfileObjectToBeRemoved = await databaseContext.RoleDetailUserProfiles
-                .Where(roleDetailUserProfile => roleDetailUserProfile.RoleDetailId == removeRoleFromAUserViewModel.RoleId)
-                .Where(roleDetailUserprofile => roleDetailUserprofile.UserProfileId == removeRoleFromAUserViewModel.UserId)
+            var roleDetailUserProfileObject = await databaseContext.RoleDetailUserProfiles
+                .Where(r => r.Id == removeRoleFromAUserViewModel.Id)
+                .Include(r => r.UserProfile.User)
+                .Include(r => r.RoleDetail.Role)
                 .FirstOrDefaultAsync();
 
             // Map user object into user view model
             var userViewModel = _mapper.Map<UserProfileViewModel>(userObject);
 
             // Delete the role detail user profile object associated with the role which need to be removed from the user
-            databaseContext.RoleDetailUserProfiles.Remove(roleDetailUserProfileObjectToBeRemoved);
+            databaseContext.RoleDetailUserProfiles.Remove(roleDetailUserProfileObject);
 
             // Save changes
             await databaseContext.SaveChangesAsync();
 
             // Remove role from a user
-            IdentityResult removeRoleResult = await _userManager.RemoveFromRolesAsync(userObject.User, new List<string> { roleViewModel.RoleName });
+            IdentityResult removeRoleResult = await _userManager.RemoveFromRolesAsync(roleDetailUserProfileObject.UserProfile.User, new List<string> { roleDetailUserProfileObject.RoleDetail.Role.Name });
 
             if (removeRoleResult.Succeeded)
             {
                 // Add data to the response data
-                responseData.Add("status", "Done. Role is removed from user");
-                responseData.Add("role", roleViewModel);
-                responseData.Add("user", userViewModel);
+                responseData.Add("status", "Done.");
+                responseData.Add("role", "Role is removed from user");
             }
             else
             {

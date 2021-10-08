@@ -1,11 +1,11 @@
 ﻿<Properties StartupConfiguration="{85FE47FF-8155-4DBB-9DA2-01A836D75303}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Controllers/RoleAPIController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Controllers/WorkItemAPIController.cs">
     <Files>
-      <File FileName="Planner/Controllers/UserController.cs" Line="52" Column="1" />
-      <File FileName="Planner/Views/WorkItem/WorkItemManager.cshtml" Line="16" Column="6" />
-      <File FileName="Planner/Controllers/RoleAPIController.cs" Line="178" Column="1" />
-      <File FileName="Planner/wwwroot/js/workitem.js" Line="42" Column="34" />
-      <File FileName="Planner/wwwroot/js/role.js" Line="64" Column="10" NotebookId="1" />
+      <File FileName="Planner/Controllers/UserAPIController.cs" Line="75" Column="1" />
+      <File FileName="Planner/unit-testing-using-dotnet-test/UserAPIService/UserAPIService.cs" Line="39" Column="41" />
+      <File FileName="Planner/unit-testing-using-dotnet-test/UserAPIService.Tests/UserAPIService_CheckCurrentUserId.cs" Line="15" Column="10" />
+      <File FileName="Planner/unit-testing-using-dotnet-test/PrimeService.Tests/PrimeService_IsPrimeShould.cs" Line="19" Column="1" />
+      <File FileName="Planner/Controllers/WorkItemAPIController.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -13,30 +13,37 @@
           <Node name="Planner" expanded="True">
             <Node name="Planner" expanded="True">
               <Node name="Controllers" expanded="True">
-                <Node name="RoleAPIController.cs" selected="True" />
+                <Node name="WorkItemAPIController.cs" selected="True" />
               </Node>
-              <Node name="Data" expanded="True" />
-              <Node name="Models" expanded="True" />
-              <Node name="Profiles" expanded="True" />
-              <Node name="Services" expanded="True" />
+              <Node name="unit-testing-using-dotnet-test" expanded="True">
+                <Node name="PrimeService" expanded="True">
+                  <Node name="obj" expanded="True">
+                    <Node name="Debug" expanded="True">
+                      <Node name="net5.0" expanded="True" />
+                    </Node>
+                  </Node>
+                </Node>
+                <Node name="PrimeService.Tests" expanded="True" />
+                <Node name="UserAPIService" expanded="True" />
+                <Node name="UserAPIService.Tests" expanded="True" />
+              </Node>
               <Node name="ViewModels" expanded="True" />
-              <Node name="Views" expanded="True">
-                <Node name="Role" expanded="True" />
-                <Node name="Shared" expanded="True" />
-                <Node name="User" expanded="True" />
-                <Node name="WorkItem" expanded="True" />
-              </Node>
-              <Node name="wwwroot" expanded="True">
-                <Node name="js" expanded="True" />
-              </Node>
             </Node>
           </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.UnitTesting.TestPad">
+        <State name="__root__">
+          <Node name="Planner" selected="True" />
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.ItemProperties.Planner PreferredExecutionTarget="/Applications/Google Chrome.app" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <DisabledProjects>
+    <String>PrimeService.Tests/PrimeService.Tests.csproj</String>
+  </DisabledProjects>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

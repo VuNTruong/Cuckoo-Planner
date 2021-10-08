@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Planner.Data;
 using Planner.Models;
-using Planner.Utils;
-using Microsoft.AspNetCore.Http;
 using Planner.ViewModels;
 using AutoMapper;
+using Planner.Services;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,20 +17,20 @@ namespace Planner.Controllers
     [ApiController]
     public class WorkItemAPIController : Controller
     {
+        // Current user service (this will be used to get user id of the currently logged in user)
+        private readonly ICurrentUser _currentUserService;
+
         // WorkItem object which will be used when performing CRUD operations with work items
         public WorkItem WorkItem { get; set; }
-
-        // Current user utils (this will be used to get user id of the currently logged in user)
-        private readonly CurrentUserUtils currentUserUtils;
 
         // Auto mapper
         private IMapper _mapper;
 
         // Constructor
-        public WorkItemAPIController(IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        public WorkItemAPIController(IMapper mapper, ICurrentUser currentUserService)
         {
-            // Initialize current user utils
-            currentUserUtils = new CurrentUserUtils(httpContextAccessor);
+            // Initialize current user service
+            _currentUserService = currentUserService;
 
             // Initialize auto mapper
             _mapper = mapper;
@@ -74,7 +73,7 @@ namespace Planner.Controllers
             var databaseContext = new DatabaseContext();
 
             // Call the function to get info of the currently logged in user
-            int currentUserId = await currentUserUtils.GetCurrentUserId();
+            int currentUserId = await _currentUserService.GetCurrentUserId();
 
             // Reference the database to get work items created by the currently logged in user
             var workItems = await databaseContext.WorkItems.Where((workItem) =>
@@ -103,7 +102,7 @@ namespace Planner.Controllers
             var databaseContext = new DatabaseContext();
 
             // Call the function to get user if of the currently logged in user
-            int currentUserId = await currentUserUtils.GetCurrentUserId();
+            int currentUserId = await _currentUserService.GetCurrentUserId();
 
             // Map the new work item view model into new work item object
             WorkItem newWorkItemObject = _mapper.Map<WorkItem>(newWorkItemViewModel);

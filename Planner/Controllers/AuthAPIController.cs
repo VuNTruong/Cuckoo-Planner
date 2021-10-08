@@ -181,19 +181,13 @@ namespace Planner.Controllers
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
 
-            // Use this to read request body
-            var inputData = await new StreamReader(Request.Body).ReadToEndAsync();
-
-            // Convert JSON object into accessible object
-            var requestBody = JsonConvert.DeserializeObject<Dictionary<string, string>>(inputData);
-
             // Reference the database to get user object of the user who needs to get password reset token
-            var userObject = await databaseContext.Users.Where((userObject) =>
+            var userObject = await databaseContext.Users.FirstOrDefaultAsync((userObject) =>
                 userObject.Email == resetPasswordViewModel.Email
-            ).ToListAsync();
+            );
 
             // If there is no account associated with that email, let the client know that as well
-            if (userObject.Count == 0)
+            if (userObject == null)
             {
                 // Add data to the response data
                 responseData.Add("status", "Not found");
@@ -203,14 +197,38 @@ namespace Planner.Controllers
             }
 
             // Call the function to generate password reset token for the user
-            string resetToken = await userManager.GeneratePasswordResetTokenAsync(userObject[0]);
+            string passwordResetToken = await userManager.GeneratePasswordResetTokenAsync(userObject);
 
             // Send email with password reset token
-            await emailSender.SendEmailAsync(resetPasswordViewModel.Email, "Reset password", $"Use this token to reset your password {resetToken}");
+            await emailSender.SendEmailAsync(resetPasswordViewModel.Email, "Reset password", $"Use this token to reset your password {passwordResetToken}");
 
             // Add data to the response data
             responseData.Add("status", "Done");
             responseData.Add("data", $"An email has been sent to {resetPasswordViewModel.Email}");
+
+            return new JsonResult(responseData);
+        }
+
+        // The function to send password reset email to user with specified user id (this is for admin only)
+        [HttpPost("sendPasswordResetEmailBasedOnId")]
+        public async Task<JsonResult> SendPasswordResetBasedOnId ([FromBody] string userId)
+        {
+            // Prepare response data for the client
+            var responseData = new Dictionary<string, object>();
+
+            // Reference the database to get user object of the user who need password reset token
+            var userObject = await databaseContext.Users
+                .FirstOrDefaultAsync(user => user.Id == userId);
+
+            // Call the function to generate password reset token for the user
+            string passwordResetToken = await userManager.GeneratePasswordResetTokenAsync(userObject);
+
+            // Send email with password reset token to the user
+            await emailSender.SendEmailAsync(userObject.Email, "Reset password", $"Use this token to reset your password {passwordResetToken}");
+
+            // Add data to the response data
+            responseData.Add("status", "Done");
+            responseData.Add("data", $"An email has been sent to with Id: {userId} and email: ${userObject.Email}");
 
             return new JsonResult(responseData);
         }

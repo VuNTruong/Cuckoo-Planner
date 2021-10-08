@@ -75,6 +75,9 @@ namespace Planner
             // Register Http utils with DI
             services.AddScoped<IHttpUtils, HttpUtils>();
 
+            // Register current user service with DI
+            services.AddScoped<ICurrentUser, CurrentUserService>();
+
             // Register Error getter with DI
             services.AddScoped<IErrorGetter, ErrorGetter>();
 

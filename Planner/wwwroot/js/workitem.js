@@ -138,3 +138,19 @@ function onUpdate(work_item_id) {
         }
     })
 }
+
+// The function to send password reset email to user with specified email address
+function sendPasswordResetEmailToUserWithId(userId) {
+    // Use Ajax to send password reset email to the user
+    $.ajax({
+        url: "https://localhost:5001/api/v1/auth/sendPasswordResetEmailBasedOnId",
+        type: "POST",
+        data: JSON.stringify({
+            "userId": userId
+        }),
+        contentType: "application/json",
+        dataType: "json",
+        cache: false,
+        success: function (responseData) { }
+    })
+}

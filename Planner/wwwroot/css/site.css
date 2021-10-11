@@ -108,7 +108,7 @@ body {
 
 .list-of-work-item {
     margin-top: 5px;
-    height: calc(100vh - 260px);
+    height: calc(100vh - 325px);
     overflow: scroll;
 }
 
@@ -210,4 +210,24 @@ body {
 
 .error-message-text {
     color: #ba544c;
+}
+
+.paging-area-text {
+    float: left;
+}
+
+.paging-area-field {
+    float: left;
+    height: 30px;
+    border-radius: 10px;
+    width: 40px;
+    margin-left: 10px;
+}
+
+.paging-area-button {
+    float: left;
+    height: 30px;
+    width: 40px;
+    margin-left: 10px;
+    border-radius: 10px;
 }

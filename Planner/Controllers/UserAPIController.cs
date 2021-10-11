@@ -20,6 +20,9 @@ namespace Planner.Controllers
         // Current user service (this will be used to get user id of the currently logged in user)
         private readonly ICurrentUser _currentUserService;
 
+        // Database context service (this will be used to get entities in the database)
+        private readonly IDatabaseContext _databaseContextEntities;
+
         // User manager manager
         private readonly UserManager<User> userManager;
 
@@ -27,7 +30,7 @@ namespace Planner.Controllers
         private IMapper _mapper;
 
         // Constructor
-        public UserAPIController(UserManager<User> userManager, IMapper mapper, ICurrentUser currentUserService)
+        public UserAPIController(UserManager<User> userManager, IMapper mapper, ICurrentUser currentUserService, IDatabaseContext databasseContextEntities)
         {
             // Initialize user manager with DI
             this.userManager = userManager;
@@ -37,6 +40,9 @@ namespace Planner.Controllers
 
             // Initialize auto mapper
             _mapper = mapper;
+
+            // Initialize database context service
+            _databaseContextEntities = databasseContextEntities;
         }
 
         // The function to get all users
@@ -46,11 +52,11 @@ namespace Planner.Controllers
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
 
-            // The database context
-            var databaseContext = new DatabaseContext();
+            //// The database context
+            //var databaseContext = new DatabaseContext();
 
             // Start querying the database to get list of all users
-            var listOfUsers = await databaseContext.UserProfiles
+            var listOfUsers = await _databaseContextEntities.GetUserProfileEntity()
                 .Include(userProfile => userProfile.User)
                 .Include(userProfile => userProfile.RoleDetailUserProfiles)
                 .ToListAsync();

@@ -73,6 +73,14 @@ namespace Planner.Controllers
             // The databasse context
             DatabaseContext databaseContext = new DatabaseContext();
 
+            ////-------------------------
+            //// Queryable object
+            //IQueryable<WorkItem> query;
+
+            //// If cursor position is 0, load from beginning
+            
+            ////-------------------------
+
             // Reference the database to get list of all work items
             List<WorkItem> listOfWorkItems = await databaseContext.WorkItems
                 .Include(workItem => workItem.Creator).ToListAsync();

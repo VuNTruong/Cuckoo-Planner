@@ -1,11 +1,7 @@
 ﻿<Properties StartupConfiguration="{85FE47FF-8155-4DBB-9DA2-01A836D75303}|Default">
   <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Controllers/WorkItemAPIController.cs">
     <Files>
-      <File FileName="Planner/Controllers/UserAPIController.cs" Line="75" Column="1" />
-      <File FileName="Planner/unit-testing-using-dotnet-test/UserAPIService/UserAPIService.cs" Line="39" Column="41" />
-      <File FileName="Planner/unit-testing-using-dotnet-test/UserAPIService.Tests/UserAPIService_CheckCurrentUserId.cs" Line="15" Column="10" />
-      <File FileName="Planner/unit-testing-using-dotnet-test/PrimeService.Tests/PrimeService_IsPrimeShould.cs" Line="19" Column="1" />
-      <File FileName="Planner/Controllers/WorkItemAPIController.cs" Line="1" Column="1" />
+      <File FileName="Planner/Controllers/WorkItemAPIController.cs" Line="71" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -15,26 +11,18 @@
               <Node name="Controllers" expanded="True">
                 <Node name="WorkItemAPIController.cs" selected="True" />
               </Node>
-              <Node name="unit-testing-using-dotnet-test" expanded="True">
-                <Node name="PrimeService" expanded="True">
-                  <Node name="obj" expanded="True">
-                    <Node name="Debug" expanded="True">
-                      <Node name="net5.0" expanded="True" />
-                    </Node>
-                  </Node>
-                </Node>
-                <Node name="PrimeService.Tests" expanded="True" />
-                <Node name="UserAPIService" expanded="True" />
-                <Node name="UserAPIService.Tests" expanded="True" />
-              </Node>
+              <Node name="Data" expanded="True" />
+              <Node name="mailssave" expanded="True" />
+              <Node name="Services" expanded="True" />
               <Node name="ViewModels" expanded="True" />
+              <Node name="Views" expanded="True">
+                <Node name="WorkItem" expanded="True" />
+              </Node>
+              <Node name="wwwroot" expanded="True">
+                <Node name="css" expanded="True" />
+              </Node>
             </Node>
           </Node>
-        </State>
-      </Pad>
-      <Pad Id="MonoDevelop.UnitTesting.TestPad">
-        <State name="__root__">
-          <Node name="Planner" selected="True" />
         </State>
       </Pad>
     </Pads>

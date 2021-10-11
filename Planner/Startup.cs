@@ -81,6 +81,9 @@ namespace Planner
             // Register Error getter with DI
             services.AddScoped<IErrorGetter, ErrorGetter>();
 
+            // Register Database context service with DI
+            services.AddScoped<IDatabaseContext, DatabaseContextService>();
+
             services.AddAuthentication();
             services.AddAuthorization();
 

@@ -38,7 +38,7 @@ namespace Planner.Controllers
 
         // The function to get all work items in the database
         [HttpGet]
-        public async Task<JsonResult> GetWorkItems()
+        public async Task<JsonResult> GetWorkItems(int cursor, int amountOfRecords, string loadMode)
         {
             // Prepare response data for the client
             var responseData = new Dictionary<string, object>();
@@ -46,17 +46,101 @@ namespace Planner.Controllers
             // Database context
             var databaseContext = new DatabaseContext();
 
-            // Start querying the database
-            var workItems = await databaseContext.WorkItems
-                .Include(workItem => workItem.Creator)
-                .ToListAsync();
+            // Queryable object
+            IQueryable<WorkItem> query;
 
-            // Map list of work items into list of work item view models
-            List<WorkItemViewModel> listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
+            // Forward
+            if (loadMode == "forward")
+            {
+                // If cursor position is 0, load from beginning
+                if (cursor != 0)
+                {
+                    query = databaseContext.WorkItems
+                        .Include(workItem => workItem.Creator)
+                        .Where(workItem => workItem.Id > cursor)
+                        .Take(amountOfRecords);
+                }
+                else
+                {
+                    query = databaseContext.WorkItems
+                        .Include(workItem => workItem.Creator)
+                        .Take(amountOfRecords);
+                }
+            }
+            // Backward
+            else
+            {
+                query = databaseContext.WorkItems
+                    .OrderByDescending(workItem => workItem.Id)
+                    .Include(workItem => workItem.Creator)
+                    .Where(workItem => workItem.Id < cursor)
+                    .Take(amountOfRecords);
+            }
+
+            // Start querying the database
+            List<WorkItem> workItems = await query.ToListAsync();
+
+            // List of work item view models
+            List<WorkItemViewModel> listOfWorkItemViewModels;
+
+            // New forward cursor position
+            int newForwardCursorPosition = 0;
+
+            // New backward cursor posititon
+            int newBackwardCursorPosition = 0;
+
+            // Forward
+            if (loadMode == "forward")
+            {
+                // New backward cursor position will be first element of the list
+                newBackwardCursorPosition = workItems[0].Id;
+
+                if (workItems.Count < amountOfRecords)
+                {
+                    // Id of the last element in workItems list will be the new cursor position
+                    newForwardCursorPosition = -1;
+
+                    listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
+                } else
+                {
+                    // Id of the last element in workItems list will be the new cursor position
+                    newForwardCursorPosition = workItems[amountOfRecords - 1].Id;
+
+                    // And everything in the list of work items will be mapped into list of view models
+                    // except for the last one and the first one
+                    listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems.GetRange(0, amountOfRecords));
+                }
+            }
+            // Backward
+            else
+            {
+                // Reverse list of work items
+                workItems.Reverse();
+
+                // New forward cursor position will be last element of the list
+                newForwardCursorPosition = workItems[workItems.Count - 1].Id;
+
+                if (workItems.Count < amountOfRecords)
+                {
+                    newBackwardCursorPosition = -1;
+
+                    listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
+                } else
+                {
+                    // Id of the first element in workItems list will be the new cursor position
+                    newBackwardCursorPosition = workItems[0].Id;
+
+                    // And everything in the list of work items will be mapped into list of view models
+                    // except for the first one
+                    listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems.GetRange(0, amountOfRecords));
+                }
+            }
 
             // Add data to the response data
             responseData.Add("status", "Done");
             responseData.Add("data", listOfWorkItemViewModels);
+            responseData.Add("newForwardCursorPosition", newForwardCursorPosition);
+            responseData.Add("newBackwardCursorPosition", newBackwardCursorPosition);
 
             // Return response to the client
             return new JsonResult(responseData);
@@ -135,7 +219,7 @@ namespace Planner.Controllers
 
             // Reference the database to get work item object of the item to be
             // deleted
-            var workItemToBeDeleted = databaseContext.WorkItems
+            var workItemToBeDeleted = await databaseContext.WorkItems
                 .FirstOrDefaultAsync(workitem => workitem.Id == workItemId);
 
             // Delete the found work item

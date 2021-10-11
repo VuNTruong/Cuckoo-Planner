@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Planner.Data;
+using Planner.Services;
 using Planner.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,11 +21,17 @@ namespace Planner.Controllers
         // Auto mapper
         private IMapper _mapper;
 
+        // Database context service
+        private readonly IDatabaseContext _databaseContextEntities;
+       
         // Constructor
-        public UserController (IMapper mapper)
+        public UserController (IMapper mapper, IDatabaseContext databaseContextEntities)
         {
             // Initialize auto mapper
             _mapper = mapper;
+
+            // Initialize database context service
+            _databaseContextEntities = databaseContextEntities;
         }
 
         // The view where user can see account info
@@ -40,7 +47,7 @@ namespace Planner.Controllers
             var databaseContext = new DatabaseContext();
 
             // Reference the database, include user identity object as well
-            var userObject = await databaseContext.UserProfiles
+            var userObject = await _databaseContextEntities.GetUserProfileEntity()
                 .Include(userProfile => userProfile.User)
                 .FirstOrDefaultAsync(userProfile => userProfile.User.Id == currentUserId);
 

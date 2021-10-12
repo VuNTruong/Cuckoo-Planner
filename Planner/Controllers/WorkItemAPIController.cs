@@ -58,7 +58,7 @@ namespace Planner.Controllers
             // Queryable object
             IQueryable<WorkItem> query;
 
-            // Load mode is null by default
+            // Load mode is forward by default
             if (loadMode == null)
             {
                 loadMode = "forward";

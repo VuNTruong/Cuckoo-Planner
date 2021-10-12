@@ -46,8 +46,23 @@ namespace Planner.Controllers
             // Database context
             var databaseContext = new DatabaseContext();
 
+            // Reference the database to get last work item in the table
+            var lastWorkItem = await databaseContext.WorkItems
+                .OrderByDescending(workItem => workItem.Id)
+                .FirstAsync();
+
+            // Reference the database to get first work item in the table
+            var firstWorkItem = await databaseContext.WorkItems
+                .FirstAsync();
+
             // Queryable object
             IQueryable<WorkItem> query;
+
+            // Load mode is null by default
+            if (loadMode == null)
+            {
+                loadMode = "forward";
+            }
 
             // Forward
             if (loadMode == "forward")
@@ -81,7 +96,7 @@ namespace Planner.Controllers
             List<WorkItem> workItems = await query.ToListAsync();
 
             // List of work item view models
-            List<WorkItemViewModel> listOfWorkItemViewModels;
+            List<WorkItemViewModel> listOfWorkItemViewModels = new List<WorkItemViewModel>();
 
             // New forward cursor position
             int newForwardCursorPosition = 0;
@@ -95,21 +110,31 @@ namespace Planner.Controllers
                 // New backward cursor position will be first element of the list
                 newBackwardCursorPosition = workItems[0].Id;
 
+                // If number of found work items is less than amount of desired records, user is already at
+                // the end of the table
                 if (workItems.Count < amountOfRecords)
                 {
-                    // Id of the last element in workItems list will be the new cursor position
+                    // New forward cursor will be -1 which indicates the end is reached   
                     newForwardCursorPosition = -1;
-
-                    listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
-                } else
-                {
-                    // Id of the last element in workItems list will be the new cursor position
-                    newForwardCursorPosition = workItems[amountOfRecords - 1].Id;
-
-                    // And everything in the list of work items will be mapped into list of view models
-                    // except for the last one and the first one
-                    listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems.GetRange(0, amountOfRecords));
                 }
+                else
+                {
+                    if (workItems[amountOfRecords - 1].Id == lastWorkItem.Id)
+                    {
+                        // If user is already at the end of table (last work item id in the list will
+                        // equal to work item id of the last record in the table). New forward cursor
+                        // will be -1 which indicates the end is reached
+                        newForwardCursorPosition = -1;
+                    }
+                    else
+                    {
+                        // Id of the last element in workItems list will be the new forward cursor position
+                        newForwardCursorPosition = workItems[amountOfRecords - 1].Id;
+                    }
+                }
+
+                // List of work item view models
+                listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
             }
             // Backward
             else
@@ -122,18 +147,28 @@ namespace Planner.Controllers
 
                 if (workItems.Count < amountOfRecords)
                 {
+                    // If number of found work items is less than amount of desired records, user is already at
+                    // the end of the table
                     newBackwardCursorPosition = -1;
-
-                    listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
-                } else
-                {
-                    // Id of the first element in workItems list will be the new cursor position
-                    newBackwardCursorPosition = workItems[0].Id;
-
-                    // And everything in the list of work items will be mapped into list of view models
-                    // except for the first one
-                    listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems.GetRange(0, amountOfRecords));
                 }
+                else
+                {
+                    if (workItems[0].Id == firstWorkItem.Id)
+                    {
+                        // If user is already at the beginning of table (first work item id in the list will
+                        // equal to work item id of the first record in the table). New backward cursor
+                        // will be -1 which indicates the beginning is reached
+                        newBackwardCursorPosition = -1;
+                    }
+                    else
+                    {
+                        // Id of the first element in workItems list will be the new cursor position
+                        newBackwardCursorPosition = workItems[0].Id;
+                    }
+                }
+
+                // List of work item view models
+                listOfWorkItemViewModels = _mapper.Map<List<WorkItemViewModel>>(workItems);
             }
 
             // Add data to the response data

@@ -1,10 +1,10 @@
 ﻿<Properties StartupConfiguration="{85FE47FF-8155-4DBB-9DA2-01A836D75303}|Default">
   <MonoDevelop.Ide.Workbench ActiveDocument="Planner/Controllers/WorkItemController.cs">
     <Files>
-      <File FileName="Planner/Views/WorkItem/WorkItemManager.cshtml" Line="45" Column="41" />
-      <File FileName="Planner/Controllers/WorkItemController.cs" Line="156" Column="22" />
-      <File FileName="Planner/Views/WorkItem/WorkItemOverview.cshtml" Line="24" Column="41" />
-      <File FileName="Planner/Controllers/WorkItemAPIController.cs" Line="114" Column="40" />
+      <File FileName="Planner/Views/WorkItem/WorkItemManager.cshtml" Line="48" Column="12" />
+      <File FileName="Planner/Controllers/WorkItemController.cs" Line="72" Column="13" />
+      <File FileName="Planner/Views/WorkItem/WorkItemOverview.cshtml" Line="25" Column="6" />
+      <File FileName="Planner/Controllers/WorkItemAPIController.cs" Line="45" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -14,17 +14,8 @@
               <Node name="Controllers" expanded="True">
                 <Node name="WorkItemController.cs" selected="True" />
               </Node>
-              <Node name="Data" expanded="True" />
-              <Node name="mailssave" expanded="True" />
-              <Node name="Services" expanded="True" />
-              <Node name="ViewModels" expanded="True" />
               <Node name="Views" expanded="True">
-                <Node name="Shared" expanded="True" />
                 <Node name="WorkItem" expanded="True" />
-              </Node>
-              <Node name="wwwroot" expanded="True">
-                <Node name="css" expanded="True" />
-                <Node name="js" expanded="True" />
               </Node>
             </Node>
           </Node>

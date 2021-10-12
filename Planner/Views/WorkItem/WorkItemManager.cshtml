@@ -6,20 +6,11 @@
     // Get list of work items from controller
     var workItems = ViewData["WorkItems"] as List<WorkItemViewModel>;
 
-    // Get new forward cursor position
-    var newForwardCursorPosition = (int)ViewData["NewForwardCursorPosition"];
+    // Current page
+    int currentPage = (int)ViewData["CurrentPage"];
 
-    // Get new backward cursor position
-    var newBackwardCursorPosition = (int)ViewData["NewBackwardCursorPosition"];
-
-    // Get page size
-    var pageSize = (int)ViewData["PageSize"];
-
-    // Get the load mode
-    var loadMode = (string)ViewData["LoadMode"];
-
-    // Get current cursor
-    var currentCursor = (int)ViewData["CurrentCursor"];
+    // Page size
+    int pageSize = (int)ViewData["PageSize"];
 }
 
 <h2>@ViewData["Header"]</h2>
@@ -36,18 +27,10 @@
 <div class="add-more-work-area">
     <p class="paging-area-text">Records per page</p>
     <form action="GetAllWorkItems">
-        <input class="paging-area-field" id="work-item-manager-page-size" name="amountOfRecords" />
-        <input type="hidden" name="cursor" value="@currentCursor"/>
+        <input class="paging-area-field" id="work-item-manager-page-size" name="pageSize" />
         <input class="paging-area-button" type="submit" />
     </form>
 
-    @if (newBackwardCursorPosition != -1)
-    {
-        <a class="paging-area-button" href="/main/GetAllWorkItems?amountOfRecords=@pageSize&loadMode=backward&cursor=@newBackwardCursorPosition">Previous</a>
-    }
-
-    @if (newForwardCursorPosition != -1)
-    {
-        <a class="paging-area-button" href="/main/GetAllWorkItems?amountOfRecords=@pageSize&loadMode=forward&cursor=@newForwardCursorPosition">Next</a>
-    }
+    <a class="paging-area-button" href="/main/GetAllWorkItems?pageSize=@pageSize&pageNumber=@(currentPage - 1)">Previous</a>
+    <a class="paging-area-button" href="/main/GetAllWorkItems?pageSize=@pageSize&pageNumber=@(currentPage + 1)">Next</a>
 </div>
